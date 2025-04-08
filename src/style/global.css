@@ -16,7 +16,17 @@
     --white: #ffffff;
     --black: #000000;
 }
+/*FONDOS*/
+.bg-vook{
+    background-image: url("../img/fondos/vook_main_bg.png");
+    object-fit: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin:0;
+}
 
+
+/*ELEMENTOS PRINCIPALES*/
 body {
     font-family: var(--titles-regular);
     margin: 0;
@@ -57,20 +67,46 @@ header {
     font-size: 16px;
     margin: 10px 0;
 }
-  
+/*CONTENEDORES*/  
+.main-low-container{
+    width: 100%; 
+    margin: auto; 
+    height: 50%;
+    display: flex;
+    justify-content: center; 
+    align-items: flex-end;
+    position: absolute; 
+    bottom: 5%; 
+}
+
+/*BOTONES*/
 button {
-    margin: 5px;
     padding: 8px 12px;
     border: none;
     border-radius: 5px;
     background-color: var(--purple);
     color: var(--white);
     cursor: pointer;
+    
 }
-  
+
+
 button:hover {
     background-color: var(--light-purple);
 }
+
+.main-button{
+    margin: 10%;
+    padding: 20px 20px;
+    border: none;
+    border-radius: 15px;
+    background-color: var(--purple);
+    color: var(--white);
+    cursor: pointer; 
+    text-decoration: none;
+    display: inline;
+}
+
 
 /* Modal */
 #modal-overlay {
