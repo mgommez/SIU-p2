@@ -44,6 +44,14 @@ a {
     text-decoration: none;
     color: var(--black);
 }
+
+p {
+    margin-top: 0;
+}
+
+h4 {
+    margin-bottom: 0;
+}
   
 .galeria {
     display: flex;
@@ -76,10 +84,36 @@ a {
     margin: 10px 0;
 }
 
-.user-reseña{
-    font-style: bold;
-    font-size:medium;
+.book-info {
+    margin: 20px 20px 20px 20px;
+    padding: 5px 30px;
+    border-radius: 15px;
+    background-color: var(--light-purple);
 }
+
+.info-valoracion {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+}
+
+.resena {
+    font-size:larger;
+}
+
+.valoracion {
+    padding: 0px 30px;
+    margin-bottom: 0;
+}
+
+.info-resenas {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    align-items: baseline;
+}
+
+
 
 /*CONTENEDORES*/  
 .main-low-container{
@@ -119,6 +153,12 @@ button:hover {
     cursor: pointer; 
     text-decoration: none;
     display: inline;
+}
+
+.leer-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /*FOOTER*/
