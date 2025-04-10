@@ -8,7 +8,7 @@ const time_to_read = () => {
         const to_read = new SpeechSynthesisUtterance(text);
         to_read.lang = "es-ES";
         to_read.rate = 1;
-        to_read.pitch = 0.9;
+        to_read.pitch = 1;
         speechSynthesis.cancel();
         speechSynthesis.speak(to_read);
         //adelantar marcador.
@@ -21,14 +21,17 @@ const time_to_read = () => {
 
 const prueba = () => {
     const audio = document.querySelector(".audiobook");
-    
+    const paragraph = document.querySelector(".paragraph");
+
     console.log("Botón pulsado");
     if (audio.classList.contains("audio-on")) {
         console.log("Finalizar evento de audiolibro");
         audio.classList.remove("audio-on");
+        paragraph.classList.add("audio-off");
     } else {
         console.log("Lanzar evento de inicio de audiolibro");
         audio.classList.add("audio-on");
+        paragraph.classList.remove("audio-off");
     }
 }
 

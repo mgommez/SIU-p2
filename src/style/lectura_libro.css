@@ -18,10 +18,10 @@
 
 /*CLASSES*/
 
-.audiobook {
+.audiobook, .paragraph {
     display: None;
 }
 
-.audio-on {
+.audio-on, .audio-off {
     display: block;
 }
