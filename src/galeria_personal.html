@@ -8,26 +8,12 @@
         <link rel="stylesheet" href="style/global.css">
         <link rel="stylesheet" href="style/galeria_personal.css">
     </head>
-    <script src="script/voz.js"></script>
     <body>
         <header>
             <h1>Galería de Libros</h1>
         </header>
         <main>
-            <div class="galeria">
-                <a class="libro" href="informacion_libro.html">
-                    <img src="img/libros/libro1.jpg" alt="Libro 1">
-                    <h2>El Quijote</h2>
-                </a> 
-                <a class="libro" href="informacion_libro.html">
-                    <img src="img/libros/libro2.jpg" alt="Libro 2">
-                    <h2>Cien Años de Soledad</h2>
-                </a> 
-                <a class="libro" href="informacion_libro.html">
-                    <img src="img/libros/libro3.jpg" alt="Libro 3">
-                    <h2>La princesa prometida</h2>
-                </a> 
-            </div>
+            <div class="galeria" id="galeria-libros"></div>
             <div class="speech-button">
                 <button onclick="startRecognition()">Iniciar Reconocimiento de Voz</button>
             </div>
@@ -38,6 +24,7 @@
                     <p><strong>"Información libro"</strong> para consultar la información del libro.</p>
                 </div>
             </div>
-        </main>              
+        </main>   
+        <script src="script/voz.js"></script>           
     </body>
 </html>
