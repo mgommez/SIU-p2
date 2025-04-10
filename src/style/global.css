@@ -128,7 +128,7 @@ h4 {
 }
 
 /*BOTONES*/
-button {
+.button {
     padding: 8px 12px;
     border: none;
     border-radius: 5px;
@@ -139,7 +139,7 @@ button {
 }
 
 
-button:hover {
+.bg-vook:hover {
     background-color: var(--light-purple);
 }
 

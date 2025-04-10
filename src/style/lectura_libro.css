@@ -1,0 +1,27 @@
+:root {
+    /*FUENTES*/
+    --titles-regular: "Atkinson Hyperlegible";
+    --subtitles: "Arial Nova";
+    /*COLORES*/
+    --light-purple: #ddcdfa;
+    --purple: #8e59ef;
+    --light-gray: #f8f8f8;
+    --white: #ffffff;
+    --black: #000000;
+}
+
+/*UTILITIES*/
+.text-center {
+    text-align: center;
+}
+
+
+/*CLASSES*/
+
+.audiobook {
+    display: None;
+}
+
+.audio-on {
+    display: block;
+}
