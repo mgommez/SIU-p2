@@ -6,7 +6,9 @@
         <title>Vook_galeria</title>
         
         <link rel="stylesheet" href="style/global.css">
+        <link rel="stylesheet" href="style/galeria_personal.css">
     </head>
+    <script src="script/voz.js"></script>
     <body>
         <header>
             <h1>Galería de Libros</h1>
@@ -25,6 +27,16 @@
                     <img src="img/libros/libro3.jpg" alt="Libro 3">
                     <h2>La princesa prometida</h2>
                 </a> 
+            </div>
+            <div class="speech-button">
+                <button onclick="startRecognition()">Iniciar Reconocimiento de Voz</button>
+            </div>
+            <div>
+                <div class="speech-legend">
+                    <h4 class="comandos-title">Comandos de voz para interactuar con el sistema</h4>
+                    <p><strong>"Añadir libro"</strong> para añadir a tu galería personal un libro de los disponibles en el marketplace de la aplicación.</p>
+                    <p><strong>"Información libro"</strong> para consultar la información del libro.</p>
+                </div>
             </div>
         </main>              
     </body>
