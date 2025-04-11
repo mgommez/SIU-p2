@@ -1,0 +1,10 @@
+[
+  {
+    "titulo": "El Quijote",
+    "imagen": "img/libros/libro1.jpg"
+  },
+  {
+    "titulo": "Harry Potter y la Cámara de los Secretos",
+    "imagen": "img/libros/libro5.jpg"
+  }
+]

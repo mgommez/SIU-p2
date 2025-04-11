@@ -1,0 +1,23 @@
+[
+    {
+      "titulo": "El Quijote",
+      "imagen": "img/libros/libro1.jpg"
+    },
+    {
+      "titulo": "Cien Años de Soledad",
+      "imagen": "img/libros/libro2.jpg"
+    },
+    {
+      "titulo": "La princesa prometida",
+      "imagen": "img/libros/libro3.jpg"
+    },
+    {
+      "titulo": "Harry Potter y la Piedra Filosofal",
+      "imagen": "img/libros/libro4.jpg"
+    },
+    {
+      "titulo": "Harry Potter y la Cámara de los Secretos",
+      "imagen": "img/libros/libro5.jpg"
+    }
+]
+  

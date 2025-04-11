@@ -17,6 +17,15 @@
 
 
 /*CLASSES*/
+.button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--purple);
+    color: var(--white);
+    cursor: pointer;
+    
+}
 
 .audiobook, .paragraph {
     display: None;
