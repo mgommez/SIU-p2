@@ -41,6 +41,15 @@ app.post('/api/lecturas_usuario', (req, res) => {
     });
 });
 
+app.put('/api/lecturas_usuario', (req, res) => {
+    const nuevosLibros = req.body;
+    fs.writeFile(lecturasUsuarioPath, JSON.stringify(nuevosLibros, null, 2), err => {
+        if (err) return res.status(500).send("Error actualizando lecturas");
+        res.status(200).send("Lecturas actualizadas");
+    });
+});
+
+
 app.listen(PORT, () => {
     console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
