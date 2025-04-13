@@ -142,8 +142,9 @@ function startRecognition() {
         if (currentPage.includes("galeria_personal.html")) {
             if (resultado.includes("añadir libro")) {
                 window.location.href = "marketplace.html";
-            } else if (resultado.includes("información libro")) {
-                window.location.href = "informacion_libro.html";
+            } else if (resultado.includes("información")) {
+                const tituloLibro = resultado.replace("información", "").trim(); // Obtener el título del libro
+                window.location.href = `informacion_libro.html?titulo=${encodeURIComponent(tituloLibro)}`; // Redirigir con el título en la URL
             } else if (resultado.includes("borrar")) {
                 const tituloLibro = resultado.replace("borrar", "").trim();
                 borrarLibroUsuario(tituloLibro);           

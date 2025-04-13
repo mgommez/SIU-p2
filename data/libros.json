@@ -1,23 +1,42 @@
 [
-    {
-      "titulo": "El Quijote",
-      "imagen": "img/libros/libro1.jpg"
-    },
-    {
-      "titulo": "Orgullo y Prejuicio",
-      "imagen": "img/libros/libro2.jpg"
-    },
-    {
-      "titulo": "La princesa prometida",
-      "imagen": "img/libros/libro3.jpg"
-    },
-    {
-      "titulo": "Harry Potter y la Piedra Filosofal",
-      "imagen": "img/libros/libro4.jpg"
-    },
-    {
-      "titulo": "Harry Potter y la Cámara de los Secretos",
-      "imagen": "img/libros/libro5.jpg"
-    }
+  {
+    "titulo": "El Quijote",
+    "imagen": "img/libros/libro1.jpg",
+    "autor": "Miguel de Cervantes",
+    "sinopsis": "Una sátira de las novelas de caballería que narra las aventuras de un hidalgo que enloquece y se convierte en caballero andante.",
+    "valoracion": "5/5",
+    "libro": "Don Quijote de la Mancha, obra maestra de Miguel de Cervantes, es una sátira magistral de las novelas de caballería del Siglo de Oro. Narra las peripecias de Alonso Quijano, un hidalgo manchego que enloquece tras leer demasiados libros de caballerías y decide convertirse en un caballero andante bajo el nombre de Don Quijote. Armado con una armadura antigua y montado en su flaco rocín, Rocinante, parte en busca de aventuras junto a su fiel escudero Sancho Panza, un labrador pragmático y bonachón que cree que recibirá una ínsula como recompensa. Don Quijote transforma la realidad a través del prisma de sus delirios: ve castillos donde hay ventas, gigantes donde hay molinos de viento, y damiselas en apuros donde hay labradoras. A través de sus locuras y desvaríos, Cervantes logra un retrato crítico y profundo de la España del siglo XVII, con una mezcla brillante de humor, ternura y melancolía. La dualidad entre fantasía e idealismo frente a realidad y pragmatismo está presente a lo largo de toda la novela. Sancho, aunque simple, demuestra gran sabiduría popular, mientras que Don Quijote representa el anhelo de un mundo mejor, aunque fuera de lugar en su tiempo. La novela, dividida en dos partes (1605 y 1615), muestra una evolución en sus personajes, especialmente en Don Quijote, que al final, al recuperar la cordura, reniega de su vida de aventuras y muere desilusionado. Esta obra no solo es una parodia, sino también una reflexión sobre la identidad, la locura, la libertad, la justicia y el poder transformador de los ideales. Con una narrativa dinámica, diálogos profundos y personajes inolvidables, Don Quijote se mantiene como una de las cumbres de la literatura universal."
+  },
+  {
+    "titulo": "Orgullo y Prejuicio",
+    "imagen": "img/libros/libro2.jpg",
+    "autor": "Jane Austen",
+    "sinopsis": "Una historia de amor e inteligencia entre Elizabeth Bennet y el señor Darcy, ambientada en la Inglaterra georgiana.",
+    "valoracion": "4/5",
+    "libro": "Orgullo y Prejuicio es una novela escrita por Jane Austen en 1813 que explora los temas del matrimonio, la moral, las costumbres y el desarrollo personal en la Inglaterra de principios del siglo XIX. La protagonista, Elizabeth Bennet, es una joven inteligente y con carácter fuerte que vive con su familia en una zona rural. Su madre está obsesionada con casar bien a sus hijas, ya que la herencia familiar está destinada a un pariente lejano por ser una familia sin hijos varones. Elizabeth conoce al rico y reservado señor Darcy, y desde el principio ambos se juzgan erróneamente. Ella lo considera orgulloso y arrogante, mientras él la ve como inferior a su círculo social. A lo largo de la novela, ambos personajes experimentan una evolución profunda. Elizabeth aprende a cuestionar sus prejuicios, mientras que Darcy enfrenta su orgullo y demuestra su verdadero carácter mediante acciones, no palabras. Austen construye una trama ágil y diálogos ingeniosos que permiten al lector explorar la psicología de sus personajes y las normas sociales que los oprimen o moldean. El romance que florece entre Elizabeth y Darcy se convierte en un símbolo de cómo el entendimiento mutuo y el respeto pueden superar diferencias sociales y personales. Austen ofrece una crítica sutil pero firme a las convenciones de su época, particularmente en torno al papel de la mujer, la importancia del matrimonio como contrato económico y las diferencias de clase. Con un estilo refinado, agudo y sarcástico, Orgullo y Prejuicio sigue siendo una obra admirada por su análisis social y su retrato de personajes complejos y entrañables."
+  },
+  {
+    "titulo": "La princesa prometida",
+    "imagen": "img/libros/libro3.jpg",
+    "autor": "William Goldman",
+    "sinopsis": "Una historia de amor, aventuras, espadachines, gigantes y venganzas en un cuento inolvidable que parodia y homenajea los cuentos de hadas.",
+    "valoracion": "5/5",
+    "libro": "La princesa prometida, escrita por William Goldman, es una novela que combina humor, romance, aventuras y fantasía. Presentada como una adaptación de un libro ficticio de S. Morgenstern, Goldman mezcla la narrativa tradicional con comentarios irónicos y reflexiones personales que le dan un tono original e inolvidable. La historia sigue a Buttercup, una joven campesina de gran belleza que se enamora de su mozo de cuadras, Westley. Cuando él parte en busca de fortuna y se le cree muerto a manos del temido pirata Roberts, Buttercup acepta casarse con el príncipe Humperdinck, aunque sin amor. Antes de la boda, Buttercup es secuestrada por tres bandidos: un espadachín español llamado Íñigo Montoya, un gigante amistoso llamado Fezzik, y un astuto siciliano llamado Vizzini. Pero pronto aparece un misterioso hombre enmascarado que los derrota uno a uno y rescata a Buttercup: se trata de Westley, quien ha asumido la identidad del pirata Roberts. A partir de ahí se suceden escenas memorables: batallas de ingenio, duelos de espada, persecuciones y un enfrentamiento épico entre Íñigo y el asesino de su padre. Goldman logra una historia que a la vez parodia los cuentos de hadas y los celebra. El estilo meta-literario y la mezcla de géneros hacen que la novela sea tan disfrutable para adultos como para jóvenes. Con frases célebres, giros inesperados y personajes carismáticos, La princesa prometida se ha convertido en un clásico moderno que trasciende generaciones, exaltando valores como el amor verdadero, la lealtad y la valentía."
+  },
+  {
+    "titulo": "Harry Potter y la Piedra Filosofal",
+    "imagen": "img/libros/libro4.jpg",
+    "autor": "J.K. Rowling",
+    "sinopsis": "Un niño descubre que es mago y comienza su primer año en el colegio Hogwarts, donde hará amigos y enfrentará peligros mágicos.",
+    "valoracion": "5/5",
+    "libro": "Harry Potter y la Piedra Filosofal es la primera entrega de la célebre saga escrita por J.K. Rowling. La historia comienza con Harry, un niño huérfano que vive con sus despreciables tíos y su malcriado primo. Su vida cambia radicalmente cuando descubre, en su undécimo cumpleaños, que es un mago y ha sido aceptado en el colegio Hogwarts de Magia y Hechicería. En el mágico mundo de Hogwarts, Harry conoce a Ron y Hermione, con quienes forja una fuerte amistad. Juntos, descubren los secretos del castillo, enfrentan retos en sus clases y se ven envueltos en el misterio que rodea una extraña piedra con poderes extraordinarios: la piedra filosofal. A medida que avanza el curso escolar, los chicos descubren que alguien quiere robar la piedra y se embarcan en una peligrosa aventura para evitar que caiga en manos equivocadas. La novela no solo presenta un mundo fantástico repleto de criaturas mágicas, hechizos y objetos encantados, sino que también explora temas como la amistad, la valentía, el bien contra el mal, y la importancia de las decisiones. Harry descubre su conexión con el oscuro mago Lord Voldemort, quien intentó matarlo cuando era un bebé y cuya presencia aún acecha en las sombras. Con un estilo ágil y una narrativa envolvente, Rowling construye un universo coherente y fascinante que ha atrapado a millones de lectores. Esta primera entrega establece las bases de una saga que crecerá en complejidad, emoción y profundidad a medida que Harry y sus amigos maduren y enfrenten desafíos cada vez mayores."
+  },
+  {
+    "titulo": "Harry Potter y la Cámara de los Secretos",
+    "imagen": "img/libros/libro5.jpg",
+    "autor": "J.K. Rowling",
+    "sinopsis": "Durante su segundo año en Hogwarts, Harry investiga unos ataques misteriosos que parecen estar relacionados con una antigua cámara oculta.",
+    "valoracion": "4/5",
+    "libro": "Harry Potter y la Cámara de los Secretos continúa las aventuras del joven mago en su segundo año en Hogwarts. Tras recibir una advertencia misteriosa de Dobby, un elfo doméstico, Harry regresa al colegio a pesar de los obstáculos mágicos que intentan impedírselo. Una vez en Hogwarts, una serie de extraños sucesos sacude la escuela: varios estudiantes, e incluso un gato, son petrificados sin explicación. Los rumores hablan de la apertura de la legendaria Cámara de los Secretos, construida por uno de los fundadores del colegio, Salazar Slytherin. Según la leyenda, solo su heredero podrá abrirla y liberar al monstruo que habita dentro. Con la ayuda de Ron y Hermione, Harry intenta resolver el misterio. Descubre una conexión con el pasado del colegio y empieza a oír una voz que nadie más puede oír, lo que lo convierte en sospechoso. Finalmente, con la ayuda de pistas dejadas por Hermione y una antigua libreta encantada, Harry encuentra la entrada a la Cámara, donde se enfrenta a un basilisco, un monstruo mortal, y al recuerdo adolescente de Tom Riddle, quien más tarde se convertirá en Lord Voldemort. La novela explora el valor, la lealtad y la importancia de nuestras decisiones, además de introducir conceptos clave como los horrocruxes y la sangre mágica. Rowling mezcla misterio, acción y humor en una historia que mantiene el tono mágico del primer libro, pero con un matiz más oscuro y maduro. Esta segunda entrega reafirma la complejidad del universo creado por Rowling y sienta las bases para conflictos futuros en la saga."
+  }
 ]
-  
