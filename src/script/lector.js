@@ -1,11 +1,56 @@
+//GESTIÓN DE LECTURA
 
-const text = "La historia de Marta Fumari empieza el día que le ofrecieron un cigarro en el Circo del Sol. Juan se encontró unas habichuelas al lado del río y las plantó por ocurría algo parecido a lo que le pasó a Jack y vivía aventuras como cazador de ogros. Sin embargo, en lugar de una planta enorme, salió un pollito, al cual cuidó como si de un hijo se tratase hasta que tuvo tanta hambre que lo asó, lo aliñó con ajito, aceitito y sal, y se lo comió. Atentamente: Tu cuentacuentos favorita."
+const caracteresPorPagina = 2000;
+
+async function obtenerDatos() {
+    try {
+      const response = await fetch('/api/libros');
+      const biblioteca = await response.json();
+      const titulo = localStorage.getItem("titulo");
+      const libro = biblioteca.find(l => l.titulo.toLowerCase() === titulo.toLowerCase());
+      const texto = libro.texto;
+      console.log("titulo: ", titulo, "texto: ", texto);
+      return libro;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+window.addEventListener("DOMContentLoaded", () => {
+    obtenerDatos().then(libro => {
+        document.getElementById('book_title').textContent = libro.titulo;
+        const page_content = libro.texto.slice(0,caracteresPorPagina);
+        document.getElementById('book_page').textContent = page_content;
+        localStorage.setItem("marcapaginas", caracteresPorPagina);
+        
+      });
+      
+    document.getElementById("boton-next").addEventListener("click", pasarPagina);
+
+});
+
+//Evento paso de página
+const pasarPagina = () => {
+
+    console.log("Estoy pasando página");
+    const marcador = localStorage.getItem("marcapaginas");
+    
+    obtenerDatos().then(libro => {
+    page_content = libro.texto.slice(marcador, marcador + caracteresPorPagina);
+    document.getElementById('book_page').textContent = page_content;
+    localStorage.setItem("marcapaginas", marcador + caracteresPorPagina);
+    });
+}
+
+
+
+//GESTIÓN DE AUDIOLIBRO
 
 const time_to_read = () => {
 
     if (audio.classList.contains('audio-on')) {
         console.log("Iniciando lectura...");
-        const to_read = new SpeechSynthesisUtterance(text);
+        const to_read = new SpeechSynthesisUtterance(document.getElementById('book_page').textContent);
         to_read.lang = "es-ES";
         to_read.rate = 1;
         to_read.pitch = 1;
@@ -36,8 +81,8 @@ const prueba = () => {
 }
 
 //Evento activación audiolibro
-const boton = document.querySelector(".prueba");
-boton.addEventListener("click", prueba);
+const boton_audio = document.querySelector(".prueba");
+boton_audio.addEventListener("click", prueba);
 
 //Modo audiolibro
 const audio = document.querySelector(".audiobook");

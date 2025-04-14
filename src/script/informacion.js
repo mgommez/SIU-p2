@@ -1,11 +1,14 @@
 window.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const tituloLibro = params.get('titulo'); // Obtiene el título del libro desde la URL
+   
 
     if (tituloLibro) {
         fetch('/api/lecturas_usuario')  // Asegúrate de tener la ruta correcta al archivo JSON
             .then(res => res.json())
             .then(libros => {
+                
+                localStorage.setItem("titulo", tituloLibro);
                 const libro = libros.find(l => l.titulo.toLowerCase() === tituloLibro.toLowerCase());
 
                 if (libro) {

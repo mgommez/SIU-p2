@@ -34,3 +34,14 @@
 .audio-on, .audio-off {
     display: block;
 }
+
+.paragraph-holder{
+    height: 600px;
+    overflow: hidden;
+    margin-bottom: 5%;
+    
+}
+
+.paragraph-audio-off{
+    padding: 2% 7% 7%;
+}
