@@ -12,6 +12,7 @@ app.use(express.json());
 const librosPath = path.join(__dirname, 'data', 'libros.json');
 const lecturasUsuarioPath = path.join(__dirname, 'data', 'lecturas_usuario.json');
 
+
 app.get('/api/libros', (req, res) => {
     fs.readFile(librosPath, 'utf8', (err, data) => {
         if (err) return res.status(500).send("Error leyendo libros");
@@ -36,7 +37,8 @@ app.post('/api/lecturas_usuario', (req, res) => {
 
         fs.writeFile(lecturasUsuarioPath, JSON.stringify(libros, null, 2), err => {
             if (err) return res.status(500).send("Error escribiendo libro");
-            res.status(200).send("Libro añadido");
+            res.status(200).json({ mensaje: "Lectura actualizada"});
+
         });
     });
 });
@@ -49,6 +51,35 @@ app.put('/api/lecturas_usuario', (req, res) => {
     });
 });
 
+
+
+app.patch('/api/lecturas_usuario', (req, res) => {
+
+    fs.readFile(lecturasUsuarioPath, 'utf8', (err, data) => {
+        if (err) return res.status(500).json({ error: 'Error leyendo archivo' });
+        
+        
+        let libros = JSON.parse(data);
+
+        //CASO 1: update de marcapáginas
+        if("marcador" in req.body){
+            const { titulo, marcador } = req.body;
+
+            //obtenemos datos del libro
+            const index = libros.findIndex(l => l.titulo.toLowerCase() === titulo.toLowerCase());
+            if (index === -1) return res.status(404).json({ error: 'Libro no encontrado' });
+
+            //modificación del campo marcador
+            libros[index].marcador = marcador;
+        }
+        
+        //escritura de fichero
+        fs.writeFile(lecturasUsuarioPath, JSON.stringify(libros, null, 2), err => {
+            if (err) return res.status(500).json({ error: 'Error escribiendo archivo' });
+            res.status(200).json({ mensaje: 'JSON de lecturas actualizado'});
+        });
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Servidor funcionando en http://localhost:${PORT}`);

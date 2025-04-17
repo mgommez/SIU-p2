@@ -249,7 +249,13 @@ function manejarResultadoReconocimiento(resultado, recognition) {
                 alert("Este libro ya está en tu galería personal. Elige otro o di 'Cancelar'.");
                 startRecognition(); // Reanudar escucha
             } else {
-                guardarLibroUsuario(resultadoLibro);
+                const nueva_entrada = {
+                    titulo: resultadoLibro.titulo,
+                    imagen: resultadoLibro.imagen,
+                    marcapaginas: 0, 
+                    valoración: 0,
+                }
+                guardarLibroUsuario(nueva_entrada);
             }
         })
         .catch(err => {
@@ -268,8 +274,9 @@ window.addEventListener("DOMContentLoaded", () => {
                 contenedor.innerHTML = '';
 
                 libros.forEach(libro => {
+                    
                     const libroHTML = `
-                        <a class="libro" href="informacion_libro.html">
+                        <a class="libro" href="informacion_libro.html?titulo=${encodeURIComponent(libro.titulo)}">
                             <img src="${libro.imagen}" alt="${libro.titulo}">
                             <h2>${libro.titulo}</h2>
                         </a>

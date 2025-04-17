@@ -12,14 +12,18 @@
     <body>
         <header>
             <h1 id="book_title">TÍTULO LIBRO</h1>
+            <p id="author-name">NOMBRE AUTOR</p>
         </header>
         <main>
             <section>
                 <div class="paragraph-holder">
                     <p class="paragraph-audio-off" id="book_page">Hola</p>
                 </div>
-                <div>
-                    <button class="buton" id="boton-next">Siguiente</button>
+                <div class="pageturn-holder">
+                    <button class="button" id="boton-prev">Anterior</button>
+                    <button class="button" id="boton-next">Siguiente</button>
+                    <button class="button" id="boton-save">Marcapaginas</button>
+                    
                 </div>
                 <div class="audiobook">
                     <h4>>Modo audiolibro on</h4>
@@ -29,7 +33,7 @@
             </section>
         </main>   
         <footer class="book-footer">
-            NOMBRE AUTOR
+            <p id="page-counter">PÁGINA</p>
         </footer>
         <script src="script/lector.js"></script>           
     </body>

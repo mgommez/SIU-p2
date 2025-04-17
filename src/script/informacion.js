@@ -1,44 +1,46 @@
-window.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const tituloLibro = params.get('titulo'); // Obtiene el título del libro desde la URL
-   
 
-    if (tituloLibro) {
-        fetch('/api/lecturas_usuario')  // Asegúrate de tener la ruta correcta al archivo JSON
-            .then(res => res.json())
-            .then(libros => {
-                
-                localStorage.setItem("titulo", tituloLibro);
-                const libro = libros.find(l => l.titulo.toLowerCase() === tituloLibro.toLowerCase());
+async function ObtenerDatosLibro() {
+    try {
+        //lectura de los datos
+        const response = await fetch('/api/libros');
+        if (!response.ok) {
+            throw new Error(`Error al leer json libros: ${response.statusText}`);
+          }
 
-                if (libro) {
-                    // Actualizamos el contenido de la página con los datos del libro
-                    document.getElementById('titulo-libro').textContent = libro.titulo;
-                    document.getElementById('nombre-autor').textContent = libro.autor;
-                    document.getElementById('sinopsis').textContent = libro.sinopsis;
-                    document.getElementById('valoracion').textContent = libro.valoracion;
-                    /*
-                    // Mostrar las reseñas -> habría que añadir un <div id="resena"> en el html
-                    const resenasContainer = document.getElementById('resenas');
-                    libro.resenas.forEach(resena => {
-                        const resenaHTML = `
-                            <div class="resena">
-                                <div class="info-resenas">
-                                    <h4>${resena.nombre}</h4>
-                                    <p class="valoracion">${resena.valoracion}/5</p>
-                                </div>
-                                <p>${resena.comentario}</p>
-                            </div>
-                        `;
-                        resenasContainer.innerHTML += resenaHTML;
-                    });
-                    */
-                } else {
-                    alert("Libro no encontrado.");
-                }
-            })
-            .catch(err => {
-                console.error("Error al cargar los datos del libro:", err);
-            });
+        const biblioteca = await response.json();
+        
+        //lectura de título de la url
+        const params = new URLSearchParams(window.location.search);
+        const titulo = params.get('titulo');
+
+
+        //obtención de datos
+        const libro = biblioteca.find(l => l.titulo.toLowerCase() === titulo.toLowerCase());
+        return libro;
+
+    } catch (error) {
+        console.error("Error en ObtenerDatosLibro:", error);
     }
+  }
+
+window.addEventListener("DOMContentLoaded", () => {
+    ObtenerDatosLibro().then(libro => {
+        if(libro){
+            //Escritura en localStorage
+            localStorage.setItem("titulo", libro.titulo);
+
+            // Actualizamos el contenido de la página con los datos del libro
+            document.getElementById('titulo-libro').textContent = libro.titulo;
+            document.getElementById('nombre-autor').textContent = libro.autor;
+            document.getElementById('sinopsis').textContent = libro.sinopsis;
+            document.getElementById('valoracion').textContent = libro.valoracion;
+        }
+
+        else{
+            console.log("No se ha encontrado el libro");
+        }
+
+    });
+
+
 });
