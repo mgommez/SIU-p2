@@ -167,19 +167,24 @@ const guardarMarcapaginas = async() => {
 
 const time_to_read = () => {
 
+    speechSynthesis.cancel()
     if (audio.classList.contains('audio-on')) {
+
         console.log("Iniciando lectura...");
         const to_read = new SpeechSynthesisUtterance(document.getElementById('book_page').textContent);
         to_read.lang = "es-ES";
         to_read.rate = 1;
         to_read.pitch = 1;
-        speechSynthesis.cancel();
+        to_read.onend = () => {
+            console.log("Fragmento leído");
+            pasarPagina();
+            setTimeout(() => {
+                time_to_read();;
+            }, 100);
+        }
+        
         speechSynthesis.speak(to_read);
-        //adelantar marcador.
-    } else {
-        console.log("Finalizando lectura...");
-        speechSynthesis.cancel()
-        //no se cambia el marcador.
+        
     }
 }
 
@@ -215,3 +220,7 @@ const observer = new MutationObserver((mutationsList) => {
 })
 observer.observe(audio, {attributes: true})
 
+window.addEventListener('beforeunload', () => {
+    speechSynthesis.cancel();
+    guardarMarcapaginas();
+});
