@@ -220,6 +220,7 @@ const observer = new MutationObserver((mutationsList) => {
 })
 observer.observe(audio, {attributes: true})
 
+//recargar, retroceder, salir.
 window.addEventListener('beforeunload', () => {
     speechSynthesis.cancel();
     guardarMarcapaginas();
