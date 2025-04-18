@@ -2,13 +2,13 @@
   {
     "titulo": "El Quijote",
     "imagen": "img/libros/libro1.jpg",
-    "marcador": 0,
+    "marcador": "0",
     "valoración": 0
   },
   {
     "titulo": "Harry Potter y la Cámara de los Secretos",
     "imagen": "img/libros/libro5.jpg",
-    "marcador": "-1900",
+    "marcador": "-650",
     "valoración": 0
   },
   {

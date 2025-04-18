@@ -159,7 +159,7 @@ function startRecognition() {
                 manejarResultadoReconocimiento(resultado, recognition);
             }
         } else if (currentPage.includes("lectura_libro.html")) {
-            if (resultado.includes("reproducir audiolibro") || resultado.includes("parar audiolibro")) {
+            if (resultado.includes("reproducir") || resultado.includes("detener")) {
                 manejarAudiolibro();
             }
         }
