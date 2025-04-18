@@ -158,31 +158,12 @@ function startRecognition() {
             } else {
                 manejarResultadoReconocimiento(resultado, recognition);
             }
-        } else if (currentPage.includes("lectura_libro.html")) {
-            if (resultado.includes("reproducir") || resultado.includes("detener")) {
-                manejarAudiolibro();
-            }
         }
     };
 
     recognition.onerror = function (event) {
         console.error("Error en el reconocimiento de voz:", event.error);
     };
-}
-
-async function manejarAudiolibro() {
-    const audio = document.querySelector(".audiobook");
-    const paragraph = document.querySelector(".paragraph-holder");
-
-    if (audio.classList.contains("audio-on")) {
-        console.log("Finalizar evento de audiolibro");
-        audio.classList.remove("audio-on");
-        paragraph.classList.add("audio-off");
-    } else {
-        console.log("Lanzar evento de inicio de audiolibro");
-        audio.classList.add("audio-on");
-        paragraph.classList.remove("audio-off");
-    }
 }
 
 async function borrarLibroUsuario(titulo) {
