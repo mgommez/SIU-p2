@@ -1,158 +1,130 @@
 //GESTIÓN DE LECTURA
 
-const caracteresPorPagina = 500;
+const caracteresLibro = 1000;
+const caracteresAudiolibro = 150;
 
-
+let caracteresPorPagina = caracteresLibro;
+let textoLibroGlobal = "";
 
 async function obtenerDatos() {
     try {
-      const response = await fetch('/api/libros');
-      const biblioteca = await response.json();
-      const titulo = localStorage.getItem("titulo");
-      const libro = biblioteca.find(l => l.titulo.toLowerCase() === titulo.toLowerCase());
-      const texto = libro.texto;
-      return libro;
+        const response = await fetch('/api/libros');
+        const biblioteca = await response.json();
+        const titulo = localStorage.getItem("titulo");
+        const libro = biblioteca.find(l => l.titulo.toLowerCase() === titulo.toLowerCase());
+        textoLibroGlobal = libro.texto;
+        return libro;
     } catch (error) {
-      console.error("Error:", error);
+        console.error("Error:", error);
     }
-  }
+}
 
-  
 async function obtenerMarcapaginas() {
     try {
         const response = await fetch('/api/lecturas_usuario');
         const biblioteca = await response.json();
         const titulo = localStorage.getItem("titulo");
         const libro = biblioteca.find(l => l.titulo.toLowerCase() === titulo.toLowerCase());
-        
         return libro.marcador;
     } catch (error) {
-      console.error("Error:", error);
+        console.error("Error:", error);
     }
-  }
+}
 
+window.addEventListener("DOMContentLoaded", async () => {
+    const [libro, marcador] = await Promise.all([obtenerDatos(), obtenerMarcapaginas()]);
+    localStorage.setItem("marcador", marcador);
+    document.getElementById('book_title').textContent = libro.titulo;
+    document.getElementById('author-name').textContent = libro.autor;
 
+    const page_content = libro.texto.slice(marcador, marcador + caracteresPorPagina);
+    document.getElementById('book_page').textContent = page_content;
 
-window.addEventListener("DOMContentLoaded", () => {
-    obtenerMarcapaginas().then(marcador =>{
-        localStorage.setItem("marcador", marcador);
-        console.log("marcador es: ", marcador);
-    });
+    const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
+    const pagina_actual = Math.ceil((parseInt(marcador) + 1) / caracteresPorPagina);
+    document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
 
-    obtenerDatos().then(libro => {
-        document.getElementById('book_title').textContent = libro.titulo;
-        document.getElementById('author-name').textContent = libro.autor;
-        
+    localStorage.setItem("paginas_totales", paginas_totales);
+    localStorage.setItem("pagina_actual", pagina_actual);
 
-        //impresión de contenido desde el último punto de lectura
-        obtenerMarcapaginas().then(marcador =>{
-            const page_content = libro.texto.slice(marcador, marcador + caracteresPorPagina);
-            document.getElementById('book_page').textContent = page_content;
-            localStorage.setItem("marcador", marcador);
-
-            //impresión de página
-            const paginas_totales = Math.ceil(libro.texto.length/caracteresPorPagina);
-            const pagina_actual = Math.ceil((parseInt(marcador)+1)/caracteresPorPagina);
-            document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
-            localStorage.setItem("paginas_totales", paginas_totales);
-            localStorage.setItem("pagina_actual", pagina_actual);
-            console.log("paginas actual y totales: ", pagina_actual, paginas_totales);
-
-        });
-        
-        
-        
-      });
-      
     document.getElementById("boton-next").addEventListener("click", pasarPagina);
     document.getElementById("boton-prev").addEventListener("click", volverPagina);
-    document.getElementById("boton-save").addEventListener("click", guardarMarcapaginas)
-
+    document.getElementById("boton-save").addEventListener("click", guardarMarcapaginas);
 });
 
-
-//Evento paso de página
-const pasarPagina = () => {
-
-    console.log("Estoy pasando página");
-    //leemos el punto de lectura actual
+const pasarPagina = async () => {
     const marcador = parseInt(localStorage.getItem("marcador"));
-    
-    //acceso a los datos del libro
-    obtenerDatos().then(libro => {
-   
-        if(marcador + caracteresPorPagina < libro.texto.length){
-            //caso 1: marcador al principio o en medio del libro
-            
-            // Segmentación e impresión del bloque a imprimir 
-            let page_content = libro.texto.slice(marcador + caracteresPorPagina,  marcador + caracteresPorPagina*2);
-            document.getElementById('book_page').textContent = page_content;
-            document.getElementById('page-counter').textContent = 
-            //actualización del punto de lectura
-            localStorage.setItem("marcador", marcador + caracteresPorPagina);
+    const libro = await obtenerDatos();
 
-            //actualización de la página
-            const paginas_totales = localStorage.getItem("paginas_totales");
-            const  pagina_actual = parseInt(localStorage.getItem("pagina_actual")) + 1;
-            document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
-            localStorage.setItem("pagina_actual", pagina_actual);
+    if (marcador + caracteresPorPagina < libro.texto.length) {
+        let nuevo_marcador = marcador + caracteresPorPagina;
+        let page_content = libro.texto.slice(nuevo_marcador, nuevo_marcador + caracteresPorPagina);
+        document.getElementById('book_page').textContent = page_content;
+
+        localStorage.setItem("marcador", nuevo_marcador);
+
+        const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
+        const pagina_actual = Math.ceil((nuevo_marcador + 1) / caracteresPorPagina);
+
+        const progressBar = document.getElementById('progress-bar');
+        if (progressBar) {
+            progressBar.value = (nuevo_marcador / libro.texto.length) * 100;
         }
-        //caso 2: marcador al final del libro, no se hace nada
-        
-        
-            
-        console.log("marcador", marcador , "nuevo marcador", marcador + caracteresPorPagina, "longitud", libro.texto.length);
 
-    });
+        document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
+        localStorage.setItem("pagina_actual", pagina_actual);
+        localStorage.setItem("paginas_totales", paginas_totales);
+
+        if (document.querySelector(".audiobook").classList.contains("audio-on")) {
+            await guardarMarcapaginas();
+        }
+    }
 }
 
-//Evento retroceso de página
-const volverPagina = () => {
-
-    console.log("Estoy volviendo la página");
-    //leemos el punto de lectura actual
+const volverPagina = async () => {
     const marcador = parseInt(localStorage.getItem("marcador"));
-    
-    //acceso a los datos del libro
-    obtenerDatos().then(libro => {
-        //PASO 1: estrategia de paso de página
+    const libro = await obtenerDatos();
 
-        let nuevo_marcador = marcador
-        if(marcador !=0){
-            //caso 1: marcador en medio del libro
-            nuevo_marcador = marcador - caracteresPorPagina;
-            console.log("nuevo marcador", nuevo_marcador, "marcador", marcador);
+    if (marcador !== 0) {
+        let nuevo_marcador = marcador - caracteresPorPagina;
+        let page_content = libro.texto.slice(nuevo_marcador, marcador);
+        document.getElementById('book_page').textContent = page_content;
 
-            let page_content = libro.texto.slice(nuevo_marcador, marcador);
-            document.getElementById('book_page').textContent = page_content;
-            //actualización del punto de lectura
-            localStorage.setItem("marcador", nuevo_marcador);
+        localStorage.setItem("marcador", nuevo_marcador);
 
-            //actualización de la página
-            const paginas_totales = localStorage.getItem("paginas_totales");
-            const  pagina_actual = parseInt(localStorage.getItem("pagina_actual")) - 1;
-            document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
-            localStorage.setItem("pagina_actual", pagina_actual);
-        }
-        //caso 2: el marcador ya es 0, no cambia nada. 
-        
-        console.log("marcador", marcador , "nuevo marcador", nuevo_marcador, "longitud", libro.texto.length);
-    
-    });
+        const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
+        const pagina_actual = Math.ceil((nuevo_marcador + 1) / caracteresPorPagina);
+
+        document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
+        document.getElementById('progress-bar').value = (nuevo_marcador / libro.texto.length) * 100;
+
+        localStorage.setItem("pagina_actual", pagina_actual);
+    }
 }
 
+const refrescarParagraph = async () => {
+    const marcador = parseInt(localStorage.getItem("marcador"));
+    const texto = textoLibroGlobal;
 
-//Evento guardado de pagina
-const guardarMarcapaginas = async() => {
+    const page_content = texto.slice(marcador, marcador + caracteresPorPagina);
+    document.getElementById('book_page').textContent = page_content;
+
+    const paginas_totales = Math.ceil(texto.length / caracteresPorPagina);
+    const pagina_actual = Math.ceil((marcador + 1) / caracteresPorPagina);
+    document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
+    document.getElementById('progress-bar').value = (marcador / texto.length) * 100;
+}
+
+const guardarMarcapaginas = async () => {
     const titulo_libro = localStorage.getItem("titulo");
     const valor = localStorage.getItem("marcador");
+
     try {
         const response = await fetch('api/lecturas_usuario', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ titulo: titulo_libro, marcador: valor})
+            body: JSON.stringify({ titulo: titulo_libro, marcador: valor })
         });
-    
 
         const resultado = await response.json();
         console.log('Marcapáginas guardado:', resultado);
@@ -161,100 +133,98 @@ const guardarMarcapaginas = async() => {
     }
 }
 
-
-
 //GESTIÓN DE AUDIOLIBRO
 
 const audio_speed = document.getElementById("audio-speed");
 
-//Lectura en voz alta
 const read_aloud = () => {
     console.log("Iniciando lectura...");
-        const to_read = new SpeechSynthesisUtterance(document.getElementById('book_page').textContent);
-        to_read.lang = "es-ES";
-        to_read.rate = parseFloat(audio_speed.value);
-        to_read.pitch = 1;
-        to_read.onend = () => {
-            console.log("Fragmento leído");
-            pasarPagina();
-            setTimeout(() => {
-                time_to_read();;
-            }, 200);
-        }
-    
-        speechSynthesis.speak(to_read);
+    const to_read = new SpeechSynthesisUtterance(document.getElementById('book_page').textContent);
+    to_read.lang = "es-ES";
+    to_read.rate = parseFloat(audio_speed.value);
+    to_read.pitch = 1;
+
+    to_read.onend = async () => {
+        console.log("Fragmento leído");
+        await pasarPagina();
+        await new Promise(resolve => setTimeout(resolve, 10));
+        time_to_read();
+    }
+
+    speechSynthesis.speak(to_read);
 }
 
-const time_to_read = () => {
+const time_to_read = async () => {
+    speechSynthesis.cancel();
 
-    speechSynthesis.cancel()
     if (audio.classList.contains('audio-on')) {
-      read_aloud();  
+        read_aloud();
     }
 }
 
-const audio_handler = () => {
+const audio_handler = async () => {
     const audio = document.querySelector(".audiobook");
     const paragraph = document.querySelector(".paragraph-holder");
 
-    console.log("Botón pulsado");
-    if (audio.classList.contains("audio-on")) {
-        console.log("Finalizar evento de audiolibro");
-        audio.classList.remove("audio-on");
-        paragraph.classList.add("audio-off");
-    } else {
-        console.log("Lanzar evento de inicio de audiolibro");
-        audio.classList.add("audio-on");
-        paragraph.classList.remove("audio-off");
-    }
+    caracteresPorPagina = audio.classList.contains("audio-on") ? caracteresLibro : caracteresAudiolibro;
+
+    await refrescarParagraph();
+    audio.classList.toggle("audio-on");
+    paragraph.classList.toggle("audio-off");
 }
 
-//Evento activación audiolibro
 const boton_audio = document.getElementById("boton-audio");
 boton_audio.addEventListener("click", audio_handler);
 
+function reconocimiento_voz() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "es-ES";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
+    recognition.start();
 
-audio_speed.addEventListener("input", time_to_read);
+    recognition.onresult = function (event) {
+        const resultado = event.results[0][0].transcript.toLowerCase().trim();
+        if (resultado.includes("reproducir") || resultado.includes("detener")) {
+            audio_handler();
+        }
+    };
 
-//Modo audiolibro
+    recognition.onerror = function (event) {
+        console.error("Error en el reconocimiento de voz:", event.error);
+    };
+}
+
 const audio = document.querySelector(".audiobook");
 
 const observer = new MutationObserver((mutationsList) => {
     for (let mutation of mutationsList) {
         if (mutation.type === "attributes" && mutation.attributeName === "class") {
-            time_to_read()
+            time_to_read();
         }
     }
-})
-observer.observe(audio, {attributes: true})
+});
+observer.observe(audio, { attributes: true });
 
-//Personalizar velocidad lectura.
 audio_speed.addEventListener("input", time_to_read);
 
-//avanzar, retroceder audiolibro
 const audio_next = document.getElementById("audio-next");
 const audio_prev = document.getElementById("audio-prev");
 
-const next_audio = () => {
-    pasarPagina();
-    setTimeout(() => {
-        time_to_read();;
-    }, 200);
+const next_audio = async () => {
+    await pasarPagina();
+    time_to_read();
 }
 
-const prev_audio = () => {
-    volverPagina();
-    setTimeout(() => {
-        time_to_read();;
-    }, 200);
+const prev_audio = async () => {
+    await volverPagina();
+    time_to_read();
 }
 
 audio_next.addEventListener("click", next_audio);
 audio_prev.addEventListener("click", prev_audio);
 
-//recargar, retroceder, salir.
 window.addEventListener('beforeunload', () => {
     speechSynthesis.cancel();
-    guardarMarcapaginas();
 });
