@@ -225,6 +225,7 @@ const prev_audio = async () => {
 audio_next.addEventListener("click", next_audio);
 audio_prev.addEventListener("click", prev_audio);
 
-window.addEventListener('beforeunload', () => {
+window.addEventListener('beforeunload', async () => {
+    //await guardarMarcapaginas(); //Arreglar para que se guarde bien
     speechSynthesis.cancel();
 });
