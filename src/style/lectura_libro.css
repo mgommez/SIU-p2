@@ -32,6 +32,10 @@
     display: None;
 }
 
+.paragraph {
+    padding: 2% 7% 7%;
+}
+
 .audio-on, .audio-off {
     display: block;
 }
@@ -44,7 +48,4 @@
 }
 .pageturn-holder{
     display:inline-flex;
-}
-.paragraph-audio-off{
-    padding: 2% 7% 7%;
 }

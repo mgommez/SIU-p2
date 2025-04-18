@@ -8,7 +8,7 @@
   {
     "titulo": "Harry Potter y la Cámara de los Secretos",
     "imagen": "img/libros/libro5.jpg",
-    "marcador": "0",
+    "marcador": "-1900",
     "valoración": 0
   },
   {
