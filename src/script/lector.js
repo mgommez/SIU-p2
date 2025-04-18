@@ -188,9 +188,9 @@ const time_to_read = () => {
     }
 }
 
-const prueba = () => {
+const audio_handler = () => {
     const audio = document.querySelector(".audiobook");
-    const paragraph = document.querySelector(".paragraph");
+    const paragraph = document.querySelector(".paragraph-holder");
 
     console.log("Botón pulsado");
     if (audio.classList.contains("audio-on")) {
@@ -205,8 +205,8 @@ const prueba = () => {
 }
 
 //Evento activación audiolibro
-const boton_audio = document.querySelector(".prueba");
-boton_audio.addEventListener("click", prueba);
+const boton_audio = document.getElementById("boton-audio");
+boton_audio.addEventListener("click", audio_handler);
 
 //Modo audiolibro
 const audio = document.querySelector(".audiobook");

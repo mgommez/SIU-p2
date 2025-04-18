@@ -16,25 +16,30 @@
         </header>
         <main>
             <section>
-                <div class="paragraph-holder">
-                    <p class="paragraph audio-off" id="book_page"></p>
+                <div class="paragraph-holder audio-off">
+                    <p class="paragraph" id="book_page"></p>
+                </div>
+                <div class="audiobook">
+                    <h4>>Modo audiolibro on</h4>
+                    <p class="text-center">Reproduciendo...</p>
                 </div>
                 <div class="pageturn-holder">
                     <button class="button" id="boton-prev">Anterior</button>
                     <button class="button" id="boton-next">Siguiente</button>
-                    <button class="button" id="boton-save">Marcapaginas</button>
-                    
+                    <button class="button" id="boton-save">Guardar</button>
                 </div>
-                <div class="audiobook">
-                    <h4>>Modo audiolibro on</h4>
-                    <p class = "text-center">Reproduciendo...</p>
+                <div class="pageturn-holder">
+                    <button class="button" id="boton-audio">Modo audiolibro</button>
+                    <button class="speech-button" onclick="startRecognition()">Activar comandos voz</button>
                 </div>
-                <p class="button prueba">Pulsa aquí para activar audio</p>
+                
+                
             </section>
         </main>   
         <footer class="book-footer">
             <p id="page-counter">PÁGINA</p>
         </footer>
-        <script src="script/lector.js"></script>           
+        <script src="script/lector.js"></script>
+        <script src="script/voz.js"></script>           
     </body>
 </html>
