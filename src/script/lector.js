@@ -1,6 +1,6 @@
 //GESTIÓN DE LECTURA
 
-const caracteresPorPagina = 2000;
+const caracteresPorPagina = 500;
 
 
 
@@ -165,26 +165,31 @@ const guardarMarcapaginas = async() => {
 
 //GESTIÓN DE AUDIOLIBRO
 
-const time_to_read = () => {
+const audio_speed = document.getElementById("audio-speed");
 
-    speechSynthesis.cancel()
-    if (audio.classList.contains('audio-on')) {
-
-        console.log("Iniciando lectura...");
+//Lectura en voz alta
+const read_aloud = () => {
+    console.log("Iniciando lectura...");
         const to_read = new SpeechSynthesisUtterance(document.getElementById('book_page').textContent);
         to_read.lang = "es-ES";
-        to_read.rate = 1;
+        to_read.rate = parseFloat(audio_speed.value);
         to_read.pitch = 1;
         to_read.onend = () => {
             console.log("Fragmento leído");
             pasarPagina();
             setTimeout(() => {
                 time_to_read();;
-            }, 100);
+            }, 200);
         }
-        
+    
         speechSynthesis.speak(to_read);
-        
+}
+
+const time_to_read = () => {
+
+    speechSynthesis.cancel()
+    if (audio.classList.contains('audio-on')) {
+      read_aloud();  
     }
 }
 
@@ -208,6 +213,10 @@ const audio_handler = () => {
 const boton_audio = document.getElementById("boton-audio");
 boton_audio.addEventListener("click", audio_handler);
 
+
+
+audio_speed.addEventListener("input", time_to_read);
+
 //Modo audiolibro
 const audio = document.querySelector(".audiobook");
 
@@ -219,6 +228,30 @@ const observer = new MutationObserver((mutationsList) => {
     }
 })
 observer.observe(audio, {attributes: true})
+
+//Personalizar velocidad lectura.
+audio_speed.addEventListener("input", time_to_read);
+
+//avanzar, retroceder audiolibro
+const audio_next = document.getElementById("audio-next");
+const audio_prev = document.getElementById("audio-prev");
+
+const next_audio = () => {
+    pasarPagina();
+    setTimeout(() => {
+        time_to_read();;
+    }, 200);
+}
+
+const prev_audio = () => {
+    volverPagina();
+    setTimeout(() => {
+        time_to_read();;
+    }, 200);
+}
+
+audio_next.addEventListener("click", next_audio);
+audio_prev.addEventListener("click", prev_audio);
 
 //recargar, retroceder, salir.
 window.addEventListener('beforeunload', () => {

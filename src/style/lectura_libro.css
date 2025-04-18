@@ -41,11 +41,12 @@
 }
 
 .paragraph-holder{
-    height: 600px;
+    height: 200px;
     overflow: hidden;
     margin-bottom: 5%;
     
 }
+
 .pageturn-holder{
     display: flex;
     justify-content: flex-start;
