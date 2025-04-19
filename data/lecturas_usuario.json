@@ -1,26 +1,14 @@
 [
   {
-    "titulo": "El Quijote",
-    "imagen": "img/libros/libro1.jpg",
-    "marcador": "0",
+    "titulo": "La princesa y el guisante",
+    "imagen": "img/libros/guisante.jpg",
+    "marcapaginas": 0,
     "valoración": 0
   },
   {
-    "titulo": "Harry Potter y la Cámara de los Secretos",
-    "imagen": "img/libros/libro5.jpg",
-    "marcador": "-650",
-    "valoración": 0
-  },
-  {
-    "titulo": "Orgullo y Prejuicio",
-    "imagen": "img/libros/libro2.jpg",
-    "marcador": 0,
-    "valoración": 0
-  },
-  {
-    "titulo": "La princesa prometida",
-    "imagen": "img/libros/libro3.jpg",
-    "marcador": 0,
+    "titulo": "La Sirenita",
+    "imagen": "img/libros/la-sirenita.jpg",
+    "marcapaginas": 0,
     "valoración": 0
   }
 ]

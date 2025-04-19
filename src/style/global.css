@@ -72,13 +72,14 @@ h4 {
     text-decoration: none;
     color: var(--black);
 }
-  
+
 .libro img {
     width: 100%;
-    height: auto;
+    height: 200px; 
+    object-fit: cover; 
     border-radius: 5px;
 }
-  
+
 .libro h2 {
     font-size: 16px;
     margin: 10px 0;
