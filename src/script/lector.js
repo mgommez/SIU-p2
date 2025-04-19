@@ -200,12 +200,17 @@ const time_to_read = async () => {
 const audio_handler = async () => {
     const audio = document.querySelector(".audiobook");
     const paragraph = document.querySelector(".paragraph-holder");
+    const controls = document.querySelectorAll(".button-group--nav");
+
 
     caracteresPorPagina = audio.classList.contains("audio-on") ? caracteresLibro : caracteresAudiolibro;
 
     await refrescarParagraph();
     audio.classList.toggle("audio-on");
     paragraph.classList.toggle("audio-off");
+    controls.forEach((control) => {
+        control.classList.toggle("audio-on--button-group");
+    });
 }
 
 const boton_audio = document.getElementById("boton-audio");
@@ -246,6 +251,8 @@ observer.observe(audio, { attributes: true });
 
 //Velocidad audio
 const audio_speed_handler = () => {
+    document.getElementById("speed-label").textContent = "x" + audio_speed.value;
+
     const speed = parseFloat(audio_speed.value);
     socket.emit("cambiar-vel-audio", speed);
     time_to_read();
@@ -255,7 +262,10 @@ audio_speed.addEventListener("input", audio_speed_handler);
 
 socket.on('actualizar-vel-audio', (speed) => {
     console.log("Sincronización velocidad de audio: ", speed);
+    
     audio_speed.value = speed;
+    document.getElementById("speed-label").textContent = "x" + audio_speed.value;
+
     time_to_read();
 })
 
