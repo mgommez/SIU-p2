@@ -123,29 +123,99 @@ import {
     }
   }
   
-  // Manejar acciones según el gesto detectado
-  function handleGesture(gesture) {
+  let gestureCooldown = false; // Variable para controlar el tiempo de espera
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+  
+  async function handleGesture(gesture) {
     const currentPage = window.location.pathname;
+  
+    if (gestureCooldown) {
+      console.log("Esperando antes de procesar otro gesto...");
+      return; 
+    }
   
     switch (gesture) {
       case "Open_Palm":
-        if (currentPage.includes("inicio.html")) {
+        if (currentPage.includes("index.html") || currentPage === "/") {
           console.log("Gesto: Mano abierta - Navegar a galería personal.");
           window.location.href = "galeria_personal.html";
+        } else if (currentPage.includes("informacion_libro.html")) {
+          console.log("Gesto: Mano abierta - Navegar a la página de lectura.");
+          const leerButton = document.querySelector(".leer-button a");
+          if (leerButton) leerButton.click();
         }
         break;
   
-    case "Thumb_Up":
-        if (currentPage.includes("galeria_personal.html") || currentPage.includes("marketplace.html")) {
-            console.log("Gesto: Pulgar arriba - Subir en la página.");
-            window.scrollBy(0, -200); // Desplazar hacia arriba
+      case "Thumb_Up":
+        if (
+          currentPage.includes("galeria_personal.html") ||
+          currentPage.includes("marketplace.html") ||
+          currentPage.includes("informacion_libro.html")
+        ) {
+          console.log("Gesto: Pulgar arriba - Subir en la página.");
+          window.scrollBy(0, -200); // Desplazar hacia arriba
+        } else if (currentPage.includes("lectura_libro.html")) {
+          console.log("Gesto: Pulgar arriba - Pasar página.");
+          const nextButton = document.getElementById("boton-next");
+          if (nextButton) nextButton.click();
         }
+        gestureCooldown = true; 
+        await sleep(5000); // Esperar 5 segundos
+        gestureCooldown = false; 
         break;
-    
-        case "Thumb_Down":
-        if (currentPage.includes("galeria_personal.html") || currentPage.includes("marketplace.html")) {
-            console.log("Gesto: Pulgar abajo - Bajar en la página.");
-            window.scrollBy(0, 200); // Desplazar hacia abajo
+  
+      case "Thumb_Down":
+        if (
+          currentPage.includes("galeria_personal.html") ||
+          currentPage.includes("marketplace.html") ||
+          currentPage.includes("informacion_libro.html")
+        ) {
+          console.log("Gesto: Pulgar abajo - Bajar en la página.");
+          window.scrollBy(0, 200); // Desplazar hacia abajo
+        } else if (currentPage.includes("lectura_libro.html")) {
+          console.log("Gesto: Pulgar abajo - Retroceder página.");
+          const prevButton = document.getElementById("boton-prev");
+          if (prevButton) prevButton.click(); 
+        }
+        gestureCooldown = true; 
+        await sleep(5000); // Esperar 5 segundos
+        gestureCooldown = false; 
+        break;
+  
+        case "Victory":
+          if (
+            currentPage.includes("galeria_personal.html") ||
+            currentPage.includes("marketplace.html") ||
+            currentPage.includes("lectura_libro.html")
+          ) {
+            console.log("Gesto: Victoria - Activar comandos de voz.");
+            let voiceButton;
+        
+            if (currentPage.includes("galeria_personal.html")) {
+              // Seleccionar el botón en galeria_personal.html
+              voiceButton = document.querySelector('button[onclick="startRecognition()"]');
+            } else {
+              // Seleccionar el botón en otras páginas
+              voiceButton = document.querySelector('button[onclick="reconocimiento_voz()"]');
+            }
+        
+            if (voiceButton) {
+              voiceButton.click(); 
+            } else {
+              console.warn("No se encontró el botón para activar comandos de voz.");
+            }
+          }
+          break;
+  
+      case "Closed_Fist":
+        if (currentPage.includes("lectura_libro.html")) {
+          console.log("Gesto: Mano cerrada - Guardar y volver a la galería.");
+          const saveButton = document.getElementById("boton-guardar");
+          if (saveButton) saveButton.click(); 
+          window.location.href = "galeria_personal.html"; // Redirige a la galería personal
         }
         break;
   
