@@ -1,9 +1,17 @@
 const express = require('express');
+const http = require('http');
 const fs = require('fs');
+const socketIo = require('socket.io');
 const path = require('path');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 const PORT = 3000;
+
+server.listen(PORT, () => {
+    console.log(`Servidor funcionando en http://localhost:${PORT}`);
+});
 
 // Servir archivos estáticos desde 'src'
 app.use(express.static(path.join(__dirname, 'src')));
@@ -81,6 +89,17 @@ app.patch('/api/lecturas_usuario', (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`Servidor funcionando en http://localhost:${PORT}`);
-});
+//Sincronización
+io.on('connection', (socket) => {
+    console.log('Nuevo dispositivo conectado');
+    
+    //Pasar, retroceder página.
+    socket.on('cambiar-pagina', ({ titulo_libro, marcador }) => {
+        socket.broadcast.emit('actualizar-pagina', { titulo_libro, marcador });
+    });
+
+    //Desconexión.
+    socket.on('disconnect', () => {
+        console.log('Dispositivo desconectado');
+    })
+})

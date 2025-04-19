@@ -6,6 +6,8 @@ const caracteresAudiolibro = 150;
 let caracteresPorPagina = caracteresLibro;
 let textoLibroGlobal = "";
 
+const socket = io();
+
 async function obtenerDatos() {
     try {
         const response = await fetch('/api/libros');
@@ -61,8 +63,15 @@ const pasarPagina = async () => {
         let page_content = libro.texto.slice(nuevo_marcador, nuevo_marcador + caracteresPorPagina);
         document.getElementById('book_page').textContent = page_content;
 
-        localStorage.setItem("marcador", nuevo_marcador);
+        //Actualización nuevo marcador 
+        socket.emit('cambiar-pagina', {
+            titulo_libro: localStorage.getItem("titulo"),
+            marcador: nuevo_marcador
+        }) //sincronización
 
+        localStorage.setItem("marcador", nuevo_marcador); //local.
+        
+        //Actualización progreso libro.
         const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
         const pagina_actual = Math.ceil((nuevo_marcador + 1) / caracteresPorPagina);
 
@@ -90,7 +99,13 @@ const volverPagina = async () => {
         let page_content = libro.texto.slice(nuevo_marcador, marcador);
         document.getElementById('book_page').textContent = page_content;
 
-        localStorage.setItem("marcador", nuevo_marcador);
+        //Actualización nuevo marcador 
+        socket.emit('cambiar-pagina', {
+            titulo_libro: localStorage.getItem("titulo"),
+            marcador: nuevo_marcador
+        }) //sincronización
+
+        localStorage.setItem("marcador", nuevo_marcador); //local.
 
         const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
         const pagina_actual = Math.ceil((nuevo_marcador + 1) / caracteresPorPagina);
@@ -114,6 +129,15 @@ const refrescarParagraph = async () => {
     document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
     document.getElementById('progress-bar').value = (marcador / texto.length) * 100;
 }
+
+//Sincronización
+socket.on('actualizar-pagina', ({titulo_libro, marcador}) => {
+    if (titulo_libro == localStorage.getItem("titulo")) {
+        console.log("Actualizando página sincronización...")
+        localStorage.setItem("marcador", marcador);
+        refrescarParagraph();
+    }
+})
 
 const guardarMarcapaginas = async () => {
     const titulo_libro = localStorage.getItem("titulo");
