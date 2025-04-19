@@ -3,6 +3,7 @@
 const caracteresLibro = 1000;
 const caracteresAudiolibro = 150;
 
+let endBook = false;
 let caracteresPorPagina = caracteresLibro;
 let textoLibroGlobal = "";
 
@@ -87,6 +88,10 @@ const pasarPagina = async () => {
         if (document.querySelector(".audiobook").classList.contains("audio-on")) {
             await guardarMarcapaginas();
         }
+    } else {
+        //FIN LIBRO
+        endBook = true;
+        console.log("Fin libro: ", endBook);
     }
 }
 
@@ -114,6 +119,11 @@ const volverPagina = async () => {
         document.getElementById('progress-bar').value = (nuevo_marcador / libro.texto.length) * 100;
 
         localStorage.setItem("pagina_actual", pagina_actual);
+
+        //Fin libro?
+        if (endBook) {
+            endBook = false;
+        }
     }
 }
 
@@ -139,6 +149,7 @@ socket.on('actualizar-pagina', ({titulo_libro, marcador}) => {
     }
 })
 
+//Persistencia marcapáginas
 const guardarMarcapaginas = async () => {
     const titulo_libro = localStorage.getItem("titulo");
     const valor = localStorage.getItem("marcador");
@@ -181,7 +192,7 @@ const read_aloud = () => {
 const time_to_read = async () => {
     speechSynthesis.cancel();
 
-    if (audio.classList.contains('audio-on')) {
+    if (audio.classList.contains('audio-on') && !endBook) {
         read_aloud();
     }
 }
@@ -231,8 +242,24 @@ const observer = new MutationObserver((mutationsList) => {
 });
 observer.observe(audio, { attributes: true });
 
-audio_speed.addEventListener("input", time_to_read);
+//CONTROL AUDIO
 
+//Velocidad audio
+const audio_speed_handler = () => {
+    const speed = parseFloat(audio_speed.value);
+    socket.emit("cambiar-vel-audio", speed);
+    time_to_read();
+}
+
+audio_speed.addEventListener("input", audio_speed_handler);
+
+socket.on('actualizar-vel-audio', (speed) => {
+    console.log("Sincronización velocidad de audio: ", speed);
+    audio_speed.value = speed;
+    time_to_read();
+})
+
+//Avanzar, retroceder audio.
 const audio_next = document.getElementById("audio-next");
 const audio_prev = document.getElementById("audio-prev");
 

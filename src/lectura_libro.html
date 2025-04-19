@@ -33,22 +33,19 @@
                 </div>
                 <div class="pageturn-holder">
                     <button class="button" id="boton-audio">Modo audiolibro</button>
-                    <button class="button" id="boton-sincro">Sincronización</button>
                     <button class="button" onclick="reconocimiento_voz()">Activar comandos voz</button>
                 </div>
                 <div class="speech-legend">
                     <h4 class="comandos-title">Comandos de voz disponibles</h4>
-                    <p><strong>"Reproducir libro"</strong> para iniciar lectura de voz del texto.</p>
-                    <p><strong>"Detener audio"</strong> para detener la lectura de voz del texto.</p>
-                    <p><strong>"Sincronizar dispositivo"</strong> para iniciar sincronización de lectura entre dispositivos.</p>
-                    <p><strong>"Detener sincronización"</strong> para detener la sincronización entre dispositivos.</p>
+                    <p><strong>"Reproducir"</strong> para iniciar lectura de voz del texto.</p>
+                    <p><strong>"Detener"</strong> para detener la lectura de voz del texto.</p>
                 </div>
                 
             </section>
         </main>   
         <footer class="book-footer">
             <p id="page-counter">PÁGINA</p>
-            <progress id="progress-bar" value="0" max="100" style="width: 100%; height: 10px;"></progress>
+            <progress id="progress-bar" value="0" max="100"></progress>
         </footer>
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
         <script src="script/lector.js"></script>

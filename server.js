@@ -98,6 +98,10 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('actualizar-pagina', { titulo_libro, marcador });
     });
 
+    socket.on('cambiar-vel-audio', (speed) => {
+        socket.broadcast.emit('actualizar-vel-audio', speed);
+    })
+
     //Desconexión.
     socket.on('disconnect', () => {
         console.log('Dispositivo desconectado');
