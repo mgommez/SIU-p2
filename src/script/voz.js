@@ -125,6 +125,79 @@ async function mostrarLecturasUsuario() {
 }
 */
 
+function showNotification(message, onConfirm = null, onCancel = null) {
+    const container = document.getElementById("notification-container");
+
+    // Crear el contenido de la notificación
+    const notification = document.createElement("div");
+    notification.className = "notification";
+
+    const messageElement = document.createElement("p");
+    messageElement.textContent = message;
+
+    // Añadir el botón de "Cancelar"
+    const cancelButton = document.createElement("button");
+    cancelButton.textContent = "Cancelar";
+    cancelButton.onclick = () => {
+        if (onCancel) onCancel();
+        closeNotification(container);
+    };
+
+    notification.appendChild(messageElement);
+
+    // Si se proporciona una función de confirmación, añadir el botón "Confirmar"
+    if (onConfirm) {
+        const confirmButton = document.createElement("button");
+        confirmButton.textContent = "Confirmar";
+        confirmButton.onclick = () => {
+            onConfirm();
+            closeNotification(container);
+        };
+        notification.appendChild(confirmButton);
+    }
+
+    notification.appendChild(cancelButton);
+
+    // Añadir la notificación al contenedor
+    container.appendChild(notification);
+    container.classList.add("active"); // Mostrar notificación
+
+    // Iniciar reconocimiento de voz si hay confirmación o cancelación
+    if (onConfirm || onCancel) {
+        startVoiceConfirmation(onConfirm, onCancel, container);
+    }
+}
+function closeNotification(container) {
+    container.classList.remove("active"); // Ocultar notificación
+    container.innerHTML = ""; // Limpiar contenido
+}
+
+function startVoiceConfirmation(onConfirm, onCancel, container) {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "es-ES";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = function (event) {
+        const resultado = event.results[0][0].transcript.toLowerCase().trim();
+        console.log("Comando de voz reconocido:", resultado);
+
+        if (resultado.includes("confirmar")) {
+            onConfirm();
+            closeNotification(container);
+        } else if (resultado.includes("cancelar")) {
+            if (onCancel) onCancel();
+            closeNotification(container);
+        }
+    };
+
+    recognition.onerror = function (event) {
+        console.error("Error en el reconocimiento de voz:", event.error);
+    };
+}
+
 function startRecognition() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "es-ES";
@@ -153,7 +226,6 @@ function startRecognition() {
             }
         } else if (currentPage.includes("marketplace.html")) {
             if (resultado.includes("cancelar")) {
-                alert("Se ha cancelado el proceso.");
                 window.location.href = "galeria_personal.html";
             } else {
                 manejarResultadoReconocimiento(resultado, recognition);
@@ -167,41 +239,49 @@ function startRecognition() {
 }
 
 async function borrarLibroUsuario(titulo) {
-    try {
-        const res = await fetch('/api/lecturas_usuario');
-        let libros = await res.json();
+    const res = await fetch('/api/lecturas_usuario');
+    const libros = await res.json();
 
-        const libroExiste = libros.find(libro =>
-            libro.titulo.toLowerCase() === titulo.toLowerCase()
+    const libroExiste = libros.find(libro =>
+        libro.titulo.toLowerCase() === titulo.toLowerCase()
+    );
+
+    if (!libroExiste) {
+        showNotification(
+            "No se encontró el libro en tu galería.",
+            null, // No hay confirmación
+            () => {
+                console.log("Operación cancelada. Notificación cerrada.");
+            }
         );
-
-        if (!libroExiste) {
-            alert(`No se encontró el libro "${titulo}" en tu galería.`);
-            startRecognition();
-            return;
-        }
-
-        const nuevosLibros = libros.filter(libro =>
-            libro.titulo.toLowerCase() !== titulo.toLowerCase()
-        );
-
-        const deleteRes = await fetch('/api/lecturas_usuario', {
-            method: 'PUT', 
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(nuevosLibros)
-        });
-
-        if (deleteRes.ok) {
-            alert(`Libro eliminado: ${libroExiste.titulo}`);
-            window.location.reload();
-        } else {
-            alert("Error al eliminar el libro.");
-        }
-    } catch (err) {
-        console.error("Error eliminando libro:", err);
+        return;
     }
-}
 
+    showNotification(
+        `¿Estás segura de que quieres borrar el libro "${titulo}" de tu galería personal?`,
+        async () => {
+            const nuevosLibros = libros.filter(libro =>
+                libro.titulo.toLowerCase() !== titulo.toLowerCase()
+            );
+
+            const deleteRes = await fetch('/api/lecturas_usuario', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevosLibros)
+            });
+
+            if (deleteRes.ok) {
+                showNotification(`Libro eliminado: ${titulo}`);
+                window.location.reload();
+            } else {
+                showNotification("Error al eliminar el libro.");
+            }
+        },
+        () => {
+            console.log("Operación cancelada. Notificación cerrada.");
+        }
+    );
+}
 
 async function obtenerLibrosMarketplace() {
     const res = await fetch('/api/libros');
@@ -214,18 +294,29 @@ async function obtenerLecturasUsuario() {
 }
 
 async function guardarLibroUsuario(libro) {
-    const res = await fetch('/api/lecturas_usuario', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(libro)
-    });
+    showNotification(
+        `¿Estás segura de que quieres añadir el libro "${libro.titulo}" a tu galería personal?`,
+        async () => {
+            // Acción al confirmar
+            const res = await fetch('/api/lecturas_usuario', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(libro)
+            });
 
-    if (res.ok) {
-        alert(`Libro añadido: ${libro.titulo}`);
-        window.location.href = "galeria_personal.html";
-    } else {
-        alert("Error al guardar el libro");
-    }
+            if (res.ok) {
+                showNotification(`Libro añadido: ${libro.titulo}`);
+                window.location.href = "galeria_personal.html"; // Redirigir a la galería personal
+            } else {
+                showNotification("Error al guardar el libro.", null, () => {});
+            }
+        },
+        () => {
+            // Acción al cancelar
+            console.log("Operación cancelada. Redirigiendo a la galería personal...");
+            window.location.href = "galeria_personal.html"; // Redirigir a la galería personal
+        }
+    );
 }
 
 function manejarResultadoReconocimiento(resultado, recognition) {
@@ -236,7 +327,9 @@ function manejarResultadoReconocimiento(resultado, recognition) {
             );
 
             if (!resultadoLibro) {
-                alert("Libro no reconocido. Intenta decir el título exactamente.");
+                showNotification("Libro no reconocido. Intenta decir el título exactamente.", null, () => {
+                    console.log("Notificación cerrada.");
+                });
                 startRecognition(); // Reanudar escucha
                 return;
             }
@@ -246,7 +339,9 @@ function manejarResultadoReconocimiento(resultado, recognition) {
             );
 
             if (yaExiste) {
-                alert("Este libro ya está en tu galería personal. Elige otro o di 'Cancelar'.");
+                showNotification("Este libro ya está en tu galería personal. Elige otro o di 'Cancelar'.", null, () => {
+                    console.log("Notificación cerrada.");
+                });
                 startRecognition(); // Reanudar escucha
             } else {
                 const nueva_entrada = {
