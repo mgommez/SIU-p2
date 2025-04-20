@@ -41,6 +41,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('author-name').textContent = libro.autor;
 
     const page_content = libro.texto.slice(marcador, marcador + caracteresPorPagina);
+    console.log("la página es: ", marcador,  marcador + caracteresPorPagina);
     document.getElementById('book_page').textContent = page_content;
 
     const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
@@ -49,6 +50,12 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     localStorage.setItem("paginas_totales", paginas_totales);
     localStorage.setItem("pagina_actual", pagina_actual);
+
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) {
+        console.log((marcador / libro.texto.length) * 100, marcador);
+        progressBar.value = Math.ceil((marcador+caracteresPorPagina / libro.texto.length) * 100);
+    }
 
     document.getElementById("boton-next").addEventListener("click", pasarPagina);
     document.getElementById("boton-prev").addEventListener("click", volverPagina);
@@ -78,8 +85,10 @@ const pasarPagina = async () => {
 
         const progressBar = document.getElementById('progress-bar');
         if (progressBar) {
-            progressBar.value = (nuevo_marcador / libro.texto.length) * 100;
+            console.log((nuevo_marcador / libro.texto.length) * 100, nuevo_marcador);
+            progressBar.value = Math.ceil(((nuevo_marcador+caracteresPorPagina) / libro.texto.length) * 100);
         }
+
 
         document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
         localStorage.setItem("pagina_actual", pagina_actual);
@@ -92,6 +101,8 @@ const pasarPagina = async () => {
         //FIN LIBRO
         endBook = true;
         console.log("Fin libro: ", endBook);
+       
+
     }
 }
 
@@ -112,11 +123,18 @@ const volverPagina = async () => {
 
         localStorage.setItem("marcador", nuevo_marcador); //local.
 
+        //Actualización páginas y progress bar
+
         const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
         const pagina_actual = Math.ceil((nuevo_marcador + 1) / caracteresPorPagina);
 
         document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
-        document.getElementById('progress-bar').value = (nuevo_marcador / libro.texto.length) * 100;
+  
+        const progressBar = document.getElementById('progress-bar');
+        if (progressBar) {
+            console.log((nuevo_marcador / libro.texto.length) * 100, nuevo_marcador);
+            progressBar.value = Math.ceil(((nuevo_marcador+caracteresPorPagina) / libro.texto.length) * 100);
+        }
 
         localStorage.setItem("pagina_actual", pagina_actual);
 

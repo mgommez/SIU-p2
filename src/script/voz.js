@@ -252,7 +252,7 @@ function manejarResultadoReconocimiento(resultado, recognition) {
                 const nueva_entrada = {
                     titulo: resultadoLibro.titulo,
                     imagen: resultadoLibro.imagen,
-                    marcapaginas: 0, 
+                    marcador: 0, 
                     valoración: 0,
                 }
                 guardarLibroUsuario(nueva_entrada);
