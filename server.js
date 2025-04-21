@@ -62,17 +62,15 @@ app.put('/api/lecturas_usuario', (req, res) => {
 
 
 app.patch('/api/lecturas_usuario', (req, res) => {
-
     fs.readFile(lecturasUsuarioPath, 'utf8', (err, data) => {
         if (err) return res.status(500).json({ error: 'Error leyendo archivo' });
-        
         
         let libros = JSON.parse(data);
 
         //CASO 1: update de marcapáginas
         if("marcador" in req.body){
             const { titulo, marcador } = req.body;
-
+            
             //obtenemos datos del libro
             const index = libros.findIndex(l => l.titulo.toLowerCase() === titulo.toLowerCase());
             if (index === -1) return res.status(404).json({ error: 'Libro no encontrado' });
@@ -80,7 +78,18 @@ app.patch('/api/lecturas_usuario', (req, res) => {
             //modificación del campo marcador
             libros[index].marcador = marcador;
         }
-        
+        //CASO 2: update valoración
+        if("valoracion" in req.body){
+            const { titulo, valoracion } = req.body;
+
+            //obtenemos datos del libro
+            const index = libros.findIndex(l => l.titulo.toLowerCase() === titulo.toLowerCase());
+            if (index === -1) return res.status(404).json({ error: 'Libro no encontrado' });
+
+            //modificación del campo valoracion
+            libros[index].valoracion = valoracion;
+        }
+
         //escritura de fichero
         fs.writeFile(lecturasUsuarioPath, JSON.stringify(libros, null, 2), err => {
             if (err) return res.status(500).json({ error: 'Error escribiendo archivo' });
@@ -100,10 +109,10 @@ io.on('connection', (socket) => {
 
     socket.on('cambiar-vel-audio', (speed) => {
         socket.broadcast.emit('actualizar-vel-audio', speed);
-    })
+    });
 
     //Desconexión.
     socket.on('disconnect', () => {
         console.log('Dispositivo desconectado');
-    })
-})
+    });
+});

@@ -3,12 +3,12 @@
     "titulo": "La princesa y el guisante",
     "imagen": "img/libros/guisante.jpg",
     "marcador": "0",
-    "valoración": 0
+    "valoracion": 0
   },
   {
     "titulo": "La Sirenita",
     "imagen": "img/libros/la-sirenita.jpg",
     "marcador": "2",
-    "valoración": 0
+    "valoracion": 4
   }
 ]

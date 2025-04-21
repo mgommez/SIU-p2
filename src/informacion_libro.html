@@ -21,20 +21,22 @@
                     <div class="valoracion">
                         <h3 class="valoracion-title">Valoración</h3>
                         <div class="rating-container">
-                            <span class="fas fa-star unchecked" data-value="1"></span>
-                            <span class="fas fa-star unchecked" data-value="2"></span>
-                            <span class="fas fa-star unchecked" data-value="3"></span>
-                            <span class="fas fa-star unchecked" data-value="4"></span>
-                            <span class="fas fa-star unchecked" data-value="5"></span>
+                            <span class="fas fa-star unchecked star-button" data-value="1" onclick=añadirValoracion(event)></span>
+                            <span class="fas fa-star unchecked star-button" data-value="2" onclick=añadirValoracion(event)></span>
+                            <span class="fas fa-star unchecked star-button" data-value="3" onclick=añadirValoracion(event)></span>
+                            <span class="fas fa-star unchecked star-button" data-value="4" onclick=añadirValoracion(event)></span>
+                            <span class="fas fa-star unchecked star-button" data-value="5" onclick=añadirValoracion(event)></span>
                         </div>
                     </div>
                 
                 </div>
                 <div class="book-info-rigth">
-                    <img id="imagen-libro" src="" alt="Portada del libro"/>
-                
+                    <div class="info-img-container">
+                        <img id="imagen-libro" src="" alt="Portada del libro"/>
+                    </div>
+                    
                     <div class="leer-button-div">
-                        <button class="leer-button" onclick="window.location.href='lectura_libro.html';">Leer</button>
+                        <button class="main-button leer-button" onclick="window.location.href='lectura_libro.html';">Leer</button>
                     </div>
                     
                 </div>
