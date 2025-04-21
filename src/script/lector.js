@@ -10,6 +10,8 @@ let paginas = [];
 
 const socket = io();
 
+//funciones auxiliares
+
 async function obtenerDatos() {
     try {
         const response = await fetch('/api/libros');
@@ -37,7 +39,6 @@ async function obtenerMarcapaginas() {
 
 function generarPaginas(texto, palabrasPorPagina){
     const text_in_words = texto.split(/(\n|\t)| +/).filter(x => x && x.trim() !== '');
-    console.log(text_in_words);
 
     let ini_pag =0;
     let fin_pag = palabrasPorPagina;
@@ -46,7 +47,6 @@ function generarPaginas(texto, palabrasPorPagina){
 
     for(let i=0; i < paginas_totales; i++){
         paginas.push(text_in_words.slice(ini_pag, fin_pag).join(' '));
-        console.log(text_in_words.slice(ini_pag, fin_pag).join(' '));
         ini_pag += palabrasPorPagina;
         fin_pag += palabrasPorPagina;
         
@@ -56,36 +56,89 @@ function generarPaginas(texto, palabrasPorPagina){
 
 function actualizarPagina(pagina_actual){
     const paginas_totales = paginas.length;
-
     document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
 
     const progressBar = document.getElementById('progress-bar');
     if (progressBar) {
+        
         progressBar.value = ((pagina_actual) / paginas_totales) * 100;
     }
 }
 
+async function calcularPalabrasPorPagina(texto, contenedor_id) {
+    const text_in_words = texto.split(/\s+/);
+    const contenedor = document.getElementById(contenedor_id);
+    let min = 50;
+    let max = text_in_words.length;
+    let resultado = 1;
+  
+    const spanTester = document.createElement("div");
+    spanTester.style.visibility = "hidden";  // Contenedor oculto pero renderizado
+    spanTester.style.position = "absolute";
+    spanTester.style.width = contenedor.offsetWidth + "px";
+    spanTester.style.font = window.getComputedStyle(contenedor).font;
+    spanTester.style.lineHeight = window.getComputedStyle(contenedor).lineHeight;
+    document.body.appendChild(spanTester);
+  
+    // Búsqueda binaria para encontrar el máximo sin desbordar
+    while (min <= max) {
+      const mid = Math.ceil((min + max) / 2);
+      spanTester.innerText = text_in_words.slice(0, mid).join(" ");
+  
+      if (spanTester.scrollHeight > contenedor.clientHeight) {
+        // Hay desbordamiento → reduce
+        max = mid - 1;
+      } else {
+        resultado = mid;
+        min = mid + 1;
+      }
+    }
+  
+    document.body.removeChild(spanTester);
+    return resultado;
+  }
+
+//GESTIÓN DE EVENTOS DE LECTURA
+
 window.addEventListener("DOMContentLoaded", async () => {
     const [libro, marcador] = await Promise.all([obtenerDatos(), obtenerMarcapaginas()]);
-    localStorage.setItem("marcador", marcador);
+    
     document.getElementById('book_title').textContent = libro.titulo;
     document.getElementById('author-name').textContent = libro.autor;
 
     //generación de páginas escritas
-    paginas =generarPaginas(libro.texto, palabrasPorPagina);
+    await calcularPalabrasPorPagina(libro.texto, 'paragraph-holder').then(palabrasPorPagina =>{
+        console.log("las palabras por página obtenidas son: ", palabrasPorPagina);
+        paginas =generarPaginas(libro.texto, palabrasPorPagina);
+    });
+    
+    if(marcador<paginas.length){ //las nuevas páginas son menos que en un renderización anterior
+        localStorage.setItem("marcador", marcador);
+        //Impresión de contenido
+        document.getElementById('book_page').textContent = paginas[marcador];
+
+        //Actualización páginas y marcador
+        const pagina_actual = marcador+1;
+        actualizarPagina(pagina_actual);
+        
+    }
+    else{ //desbordamiento -impresión de la última página
+        localStorage.setItem("marcador", paginas.length-1);
+        //Impresión de contenido
+        document.getElementById('book_page').textContent = paginas[paginas.length-1];
+
+        //Actualización páginas y marcador
+        const pagina_actual = paginas.length;
+        actualizarPagina(pagina_actual);
+   
+    }
 
     
-    //Impresión de contenido
-    document.getElementById('book_page').textContent = paginas[marcador];
-
-    //Actualización páginas y marcador
-    const pagina_actual = marcador+1;
-    actualizarPagina(pagina_actual);
-
     //gestión de eventos -controles
     document.getElementById("boton-next").addEventListener("click", pasarPagina);
     document.getElementById("boton-prev").addEventListener("click", volverPagina);
     document.getElementById("boton-save").addEventListener("click", guardarMarcapaginas);
+    
 });
 
 const pasarPagina = async () => {
@@ -160,6 +213,7 @@ const refrescarParagraph = async () => {
     actualizarPagina(pagina_actual);
 }
 
+
 //Sincronización
 socket.on('actualizar-pagina', ({titulo_libro, marcador}) => {
     if (titulo_libro == localStorage.getItem("titulo")) {
@@ -221,6 +275,7 @@ const audio_handler = async () => {
     const audio = document.querySelector(".audiobook");
     const paragraph = document.querySelector(".paragraph-holder");
     const controls = document.querySelectorAll(".button-group--nav");
+    
 
 
     palabrasPorPagina = audio.classList.contains("audio-on") ? caracteresLibro : caracteresAudiolibro;
@@ -228,6 +283,7 @@ const audio_handler = async () => {
     await refrescarParagraph();
     audio.classList.toggle("audio-on");
     paragraph.classList.toggle("audio-off");
+
     controls.forEach((control) => {
         control.classList.toggle("audio-on--button-group");
     });
@@ -242,6 +298,13 @@ function reconocimiento_voz() {
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
+    //mostrar opciones de comandos de voz
+    const legend = document.getElementById('speech-legend-lector');
+    legend.style.display = "block";
+    setTimeout(()=>{
+        legend.style.display = "none";
+    }, 5000);
+
     recognition.start();
 
     recognition.onresult = function (event) {
@@ -249,6 +312,8 @@ function reconocimiento_voz() {
         if (resultado.includes("reproducir") || resultado.includes("detener")) {
             audio_handler();
         }
+        
+
     };
 
     recognition.onerror = function (event) {
@@ -307,6 +372,6 @@ audio_next.addEventListener("click", next_audio);
 audio_prev.addEventListener("click", prev_audio);
 
 window.addEventListener('beforeunload', async () => {
-    //await guardarMarcapaginas(); //Arreglar para que se guarde bien
+    await guardarMarcapaginas(); 
     speechSynthesis.cancel();
 });

@@ -23,7 +23,8 @@
 }
 
 .paragraph {
-    padding: 2% 7%;
+    padding: 7%;
+    
 }
 
 .audio-on, .audio-off {
@@ -31,9 +32,9 @@
 }
 
 .paragraph-holder{
-    height: 50%;
+    min-height:200px;
     margin-bottom: 5%;
-    
+    font-size: small;
 }
 
 .pageturn-holder {
@@ -42,6 +43,7 @@
     justify-content: center;
     gap: 20px; /* Más espacio entre grupos */
     padding: 10px;
+    margin: 5%;
 }
 
 .button-group {
@@ -71,6 +73,11 @@
 
 .audio-on--button-group {
    display: none; 
+}
+
+.speech-legend{
+    display: none;
+    align-items: center;
 }
 
 #progress-bar {

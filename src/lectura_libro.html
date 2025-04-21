@@ -18,7 +18,7 @@
         </header>
         <main>
             <section>
-                <div class="paragraph-holder audio-off">
+                <div class="paragraph-holder audio-off" id="paragraph-holder">
                     <p class="paragraph" id="book_page"></p>
                 </div>
                 <div class="audiobook">
@@ -59,16 +59,17 @@
                         <button class="button" id="boton-audio">
                             <i class="fas fa-headphones"></i>
                         </button>
-                        <button class="button" onclick="reconocimiento_voz()">
+                        <button class="button" onclick="reconocimiento_voz()" id="buton-audio-command">
                             <i class="fas fa-microphone"></i>
                         </button>
                     </div>
+                    <div class="speech-legend" id="speech-legend-lector">
+                        <h4 class="comandos-title">Comandos de voz disponibles</h4>
+                        <p><strong>"Reproducir"</strong> para iniciar lectura de voz del texto.</p>
+                        <p><strong>"Detener"</strong> para detener la lectura de voz del texto.</p>
+                    </div>
                 </div>
-                <div class="speech-legend">
-                    <h4 class="comandos-title">Comandos de voz disponibles</h4>
-                    <p><strong>"Reproducir"</strong> para iniciar lectura de voz del texto.</p>
-                    <p><strong>"Detener"</strong> para detener la lectura de voz del texto.</p>
-                </div>
+                
                 
             </section>
         </main>   
