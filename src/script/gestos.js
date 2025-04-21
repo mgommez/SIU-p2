@@ -210,7 +210,7 @@ import {
           }
           break;
   
-      case "Closed_Fist":
+      case "ILoveYou":
         if (currentPage.includes("lectura_libro.html")) {
           console.log("Gesto: Mano cerrada - Guardar y volver a la galería.");
           const saveButton = document.getElementById("boton-guardar");
