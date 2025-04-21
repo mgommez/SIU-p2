@@ -15,6 +15,7 @@
     --light-gray: #f8f8f8;
     --white: #ffffff;
     --black: #000000;
+    --medium-gray: #aaabae;
 }
 /*FONDOS*/
 .bg-vook{
@@ -85,27 +86,53 @@ h4 {
     margin: 10px 0;
 }
 
-.book-info {
+.book-info, .comment-section {
     margin: 20px 20px 20px 20px;
-    padding: 5px 30px;
-    border-radius: 15px;
-    background-color: var(--light-purple);
+    padding: 3%;   
+    
 }
 
-.info-valoracion {
+.book-info{
     display: flex;
-    align-items: baseline;
+    align-items: center;
+}
+
+.book-info-left{
+    background-color: var(--light-purple);
+    border-radius: 15px;   
+    padding: 2%;
+}
+
+.book-info-left, .book-info-rigth{
+    margin: 2%;
+}
+
+.valoracion {
+    display: block;
+    align-items: center;
     justify-content: center;
+}
+
+.valoracion-title{
+    margin:0;
+}
+
+
+.rating-container{
+    display: inline;
+}
+
+.checked{
+    color: orange;
+}
+.unchecked{
+    color: var(--medium-gray);
 }
 
 .resena {
     font-size:larger;
 }
 
-.valoracion {
-    padding: 0px 30px;
-    margin-bottom: 0;
-}
 
 .info-resenas {
     display: flex;
@@ -114,7 +141,9 @@ h4 {
     align-items: baseline;
 }
 
-
+.valoracion-resena{
+    margin-left: 2%;
+}
 
 /*CONTENEDORES*/  
 .main-low-container{
@@ -156,11 +185,23 @@ button {
     display: inline;
 }
 
-.leer-button {
+.leer-button-div{
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
+
+.leer-button{
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    min-width: 100%;
+    min-height: 50px;
+    border-radius: 15px;
+}
+
+
 
 /*NOTIFICACIONES*/
 /* Notificación centrada con fondo oscurecido */
@@ -201,7 +242,6 @@ button {
     background-color: var(--purple);
     color: var(--white);
     border: none;
-    border-radius: 5px;
     padding: 10px 20px;
     cursor: pointer;
     margin: 10px;

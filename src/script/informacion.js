@@ -30,6 +30,7 @@ window.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("titulo", libro.titulo);
 
             // Actualizamos el contenido de la página con los datos del libro
+            document.getElementById('imagen-libro').src = libro.imagen;
             document.getElementById('titulo-libro').textContent = libro.titulo;
             document.getElementById('nombre-autor').textContent = libro.autor;
             document.getElementById('sinopsis').textContent = libro.sinopsis;

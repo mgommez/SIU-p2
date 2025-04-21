@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>Vook_libro</title>
         <link rel="stylesheet" href="style/global.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     </head>
     <body>
         <header>
@@ -12,33 +13,69 @@
         </header>
         <main>
             <div class="book-info">
-                <h3>Sinopsis</h3>
-                <p id="sinopsis"></p>
-                <div class="leer-button">
-                    <button>
-                        <a href="lectura_libro.html">Leer</a>
-                    </button>
+                <div class="book-info-left">
+                    
+                    <h3>Sinopsis</h3>
+                    <p id="sinopsis"></p>
+
+                    <div class="valoracion">
+                        <h3 class="valoracion-title">Valoración</h3>
+                        <div class="rating-container">
+                            <span class="fas fa-star unchecked" data-value="1"></span>
+                            <span class="fas fa-star unchecked" data-value="2"></span>
+                            <span class="fas fa-star unchecked" data-value="3"></span>
+                            <span class="fas fa-star unchecked" data-value="4"></span>
+                            <span class="fas fa-star unchecked" data-value="5"></span>
+                        </div>
+                    </div>
+                
                 </div>
-                <div class="info-valoracion">
-                    <h3 class="valoracion">Valoración</h3>
-                    <p class="valoracion" id="valoracion">4/5</p>
+                <div class="book-info-rigth">
+                    <img id="imagen-libro" src="" alt="Portada del libro"/>
+                
+                    <div class="leer-button-div">
+                        <button class="leer-button" onclick="window.location.href='lectura_libro.html';">Leer</button>
+                    </div>
+                    
                 </div>
+                
+                
+                </div>
+            </div>
+            <div class="comment-section">
                 <h3>Reseñas</h3>
                 <div class="resena">
                     <div class="info-resenas">
                         <h4>Marta Fumari</h4>
-                        <p class="valoracion">2/5</p>
+                        <div class="valoracion valoracion-resena">
+                            <div class="rating-container">
+                                <span class="fas fa-star checked" data-value="1"></span>
+                                <span class="fas fa-star checked" data-value="2"></span>
+                                <span class="fas fa-star unchecked" data-value="3"></span>
+                                <span class="fas fa-star unchecked" data-value="4"></span>
+                                <span class="fas fa-star unchecked" data-value="5"></span>
+                            </div>
+                        </div>
                     </div>
                     <p>No me gustó mucho porque no se vendía suficiente humo.</p>
                 </div>
                 <div class="resena">
                     <div class="info-resenas">
                         <h4>Mortero con Falda</h4>
-                        <p class="valoracion">5/5</p>
+                        <div class="valoracion valoracion-resena">
+                            <div class="rating-container">
+                                <span class="fas fa-star checked" data-value="1"></span>
+                                <span class="fas fa-star checked" data-value="2"></span>
+                                <span class="fas fa-star checked" data-value="3"></span>
+                                <span class="fas fa-star checked" data-value="4"></span>
+                                <span class="fas fa-star checked" data-value="5"></span>
+                            </div>
+                        </div>
                     </div>
                     <p>Me encanta un buen libro en el que la gente se grita y se pelea y las cosas se van de madre.</p>
                 </div>
             </div>
+            
         </main>
         <script src="script/informacion.js"></script>
         <script src="script/gestos.js" type="module"></script>
