@@ -1,11 +1,12 @@
 //GESTIÓN DE LECTURA
 
-const caracteresLibro = 1000;
+const caracteresLibro = 200;
 const caracteresAudiolibro = 150;
 
 let endBook = false;
-let caracteresPorPagina = caracteresLibro;
+let palabrasPorPagina = caracteresLibro;
 let textoLibroGlobal = "";
+let paginas = [];
 
 const socket = io();
 
@@ -28,9 +29,39 @@ async function obtenerMarcapaginas() {
         const biblioteca = await response.json();
         const titulo = localStorage.getItem("titulo");
         const libro = biblioteca.find(l => l.titulo.toLowerCase() === titulo.toLowerCase());
-        return libro.marcador;
+        return parseInt(libro.marcador);
     } catch (error) {
         console.error("Error:", error);
+    }
+}
+
+function generarPaginas(texto, palabrasPorPagina){
+    const text_in_words = texto.split(/(\n|\t)| +/).filter(x => x && x.trim() !== '');
+    console.log(text_in_words);
+
+    let ini_pag =0;
+    let fin_pag = palabrasPorPagina;
+    const paginas_totales = Math.ceil(text_in_words.length / palabrasPorPagina);
+
+
+    for(let i=0; i < paginas_totales; i++){
+        paginas.push(text_in_words.slice(ini_pag, fin_pag).join(' '));
+        console.log(text_in_words.slice(ini_pag, fin_pag).join(' '));
+        ini_pag += palabrasPorPagina;
+        fin_pag += palabrasPorPagina;
+        
+    }
+    return paginas;
+}
+
+function actualizarPagina(pagina_actual){
+    const paginas_totales = paginas.length;
+
+    document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
+
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) {
+        progressBar.value = ((pagina_actual) / paginas_totales) * 100;
     }
 }
 
@@ -40,23 +71,18 @@ window.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('book_title').textContent = libro.titulo;
     document.getElementById('author-name').textContent = libro.autor;
 
-    const page_content = libro.texto.slice(marcador, marcador + caracteresPorPagina);
-    console.log("la página es: ", marcador,  marcador + caracteresPorPagina);
-    document.getElementById('book_page').textContent = page_content;
+    //generación de páginas escritas
+    paginas =generarPaginas(libro.texto, palabrasPorPagina);
 
-    const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
-    const pagina_actual = Math.ceil((parseInt(marcador) + 1) / caracteresPorPagina);
-    document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
+    
+    //Impresión de contenido
+    document.getElementById('book_page').textContent = paginas[marcador];
 
-    localStorage.setItem("paginas_totales", paginas_totales);
-    localStorage.setItem("pagina_actual", pagina_actual);
+    //Actualización páginas y marcador
+    const pagina_actual = marcador+1;
+    actualizarPagina(pagina_actual);
 
-    const progressBar = document.getElementById('progress-bar');
-    if (progressBar) {
-        console.log((marcador / libro.texto.length) * 100, marcador);
-        progressBar.value = Math.ceil((marcador+caracteresPorPagina / libro.texto.length) * 100);
-    }
-
+    //gestión de eventos -controles
     document.getElementById("boton-next").addEventListener("click", pasarPagina);
     document.getElementById("boton-prev").addEventListener("click", volverPagina);
     document.getElementById("boton-save").addEventListener("click", guardarMarcapaginas);
@@ -64,12 +90,13 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 const pasarPagina = async () => {
     const marcador = parseInt(localStorage.getItem("marcador"));
+    
     const libro = await obtenerDatos();
 
-    if (marcador + caracteresPorPagina < libro.texto.length) {
-        let nuevo_marcador = marcador + caracteresPorPagina;
-        let page_content = libro.texto.slice(nuevo_marcador, nuevo_marcador + caracteresPorPagina);
-        document.getElementById('book_page').textContent = page_content;
+    if (marcador + 1 < paginas.length) {
+        const nuevo_marcador = marcador + 1;
+        
+        document.getElementById('book_page').textContent = paginas[nuevo_marcador];
 
         //Actualización nuevo marcador 
         socket.emit('cambiar-pagina', {
@@ -79,41 +106,30 @@ const pasarPagina = async () => {
 
         localStorage.setItem("marcador", nuevo_marcador); //local.
         
-        //Actualización progreso libro.
-        const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
-        const pagina_actual = Math.ceil((nuevo_marcador + 1) / caracteresPorPagina);
+        //Actualización páginas y progress bar
+        pagina_actual = nuevo_marcador + 1; 
+        actualizarPagina(pagina_actual);
 
-        const progressBar = document.getElementById('progress-bar');
-        if (progressBar) {
-            console.log((nuevo_marcador / libro.texto.length) * 100, nuevo_marcador);
-            progressBar.value = Math.ceil(((nuevo_marcador+caracteresPorPagina) / libro.texto.length) * 100);
-        }
-
-
-        document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
-        localStorage.setItem("pagina_actual", pagina_actual);
-        localStorage.setItem("paginas_totales", paginas_totales);
-
+        //gestión de audiolibro
         if (document.querySelector(".audiobook").classList.contains("audio-on")) {
             await guardarMarcapaginas();
         }
+
     } else {
         //FIN LIBRO
         endBook = true;
         console.log("Fin libro: ", endBook);
-       
-
     }
 }
 
 const volverPagina = async () => {
     const marcador = parseInt(localStorage.getItem("marcador"));
+    
     const libro = await obtenerDatos();
 
     if (marcador !== 0) {
-        let nuevo_marcador = marcador - caracteresPorPagina;
-        let page_content = libro.texto.slice(nuevo_marcador, marcador);
-        document.getElementById('book_page').textContent = page_content;
+        const nuevo_marcador = marcador - 1;
+        document.getElementById('book_page').textContent = paginas[nuevo_marcador];
 
         //Actualización nuevo marcador 
         socket.emit('cambiar-pagina', {
@@ -124,19 +140,8 @@ const volverPagina = async () => {
         localStorage.setItem("marcador", nuevo_marcador); //local.
 
         //Actualización páginas y progress bar
-
-        const paginas_totales = Math.ceil(libro.texto.length / caracteresPorPagina);
-        const pagina_actual = Math.ceil((nuevo_marcador + 1) / caracteresPorPagina);
-
-        document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
-  
-        const progressBar = document.getElementById('progress-bar');
-        if (progressBar) {
-            console.log((nuevo_marcador / libro.texto.length) * 100, nuevo_marcador);
-            progressBar.value = Math.ceil(((nuevo_marcador+caracteresPorPagina) / libro.texto.length) * 100);
-        }
-
-        localStorage.setItem("pagina_actual", pagina_actual);
+        const pagina_actual = nuevo_marcador + 1;
+        actualizarPagina(pagina_actual);
 
         //Fin libro?
         if (endBook) {
@@ -147,15 +152,12 @@ const volverPagina = async () => {
 
 const refrescarParagraph = async () => {
     const marcador = parseInt(localStorage.getItem("marcador"));
-    const texto = textoLibroGlobal;
 
-    const page_content = texto.slice(marcador, marcador + caracteresPorPagina);
+    const page_content = paginas[marcador];
     document.getElementById('book_page').textContent = page_content;
 
-    const paginas_totales = Math.ceil(texto.length / caracteresPorPagina);
-    const pagina_actual = Math.ceil((marcador + 1) / caracteresPorPagina);
-    document.getElementById('page-counter').textContent = `página: ${pagina_actual} / ${paginas_totales}`;
-    document.getElementById('progress-bar').value = (marcador / texto.length) * 100;
+    const pagina_actual = marcador;
+    actualizarPagina(pagina_actual);
 }
 
 //Sincronización
@@ -221,7 +223,7 @@ const audio_handler = async () => {
     const controls = document.querySelectorAll(".button-group--nav");
 
 
-    caracteresPorPagina = audio.classList.contains("audio-on") ? caracteresLibro : caracteresAudiolibro;
+    palabrasPorPagina = audio.classList.contains("audio-on") ? caracteresLibro : caracteresAudiolibro;
 
     await refrescarParagraph();
     audio.classList.toggle("audio-on");

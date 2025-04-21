@@ -23,7 +23,7 @@
 }
 
 .paragraph {
-    padding: 2% 7% 7%;
+    padding: 2% 7%;
 }
 
 .audio-on, .audio-off {
@@ -31,8 +31,7 @@
 }
 
 .paragraph-holder{
-    height: 200px;
-    overflow: hidden;
+    height: 50%;
     margin-bottom: 5%;
     
 }
