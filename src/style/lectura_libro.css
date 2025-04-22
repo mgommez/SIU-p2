@@ -76,8 +76,21 @@
 }
 
 #progress-bar {
-    width: 100%; 
-    height: 10px;
+    width: 65%; 
+    min-height: 15px;
+    background-color: var(--light-gray);
+    transition: width 0.4s ease;
+    border-radius: 25px;
+}
+progress::-webkit-progress-bar {
+    background-color: var(--ligth-purple);
+    
+  }
+  
+progress::-webkit-progress-value {
+  background-color: var(--light-purple);
+  border-radius: 25px;
+  transition: width 0.4s ease;
 }
 
 .audio-on {

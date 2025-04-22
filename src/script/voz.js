@@ -80,7 +80,7 @@ function startRecognition() {
     recognition.maxAlternatives = 1;
 
     //mostrar opciones de comandos de voz
-    const legend = document.getElementById('speech-legend-galeria');
+    const legend = document.getElementById('speech-legend');
     legend.style.display = "block";
     setTimeout(()=>{
         legend.style.display = "none";
