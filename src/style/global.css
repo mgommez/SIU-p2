@@ -161,13 +161,14 @@ h4 {
 }
 
 /*CONTENEDORES*/  
-.main-low-container{
+.main-low-container {
     width: 100%; 
     margin: auto; 
-    height: 50%;
+    height: auto; 
     display: flex;
+    flex-direction: column; 
     justify-content: center; 
-    align-items: flex-end;
+    align-items: center; 
     position: absolute; 
     bottom: 5%; 
 }
@@ -228,7 +229,7 @@ button {
     justify-content: center;
 }
 
-.speech-legend {
+.speech-legend, .gestos-legend {
     background-color: var(--light-purple);
     justify-content: center;
     align-items: center;
@@ -239,6 +240,19 @@ button {
     padding: 15px 30px;
     border-radius: 20px;
     font-size: medium;
+}
+
+.gestos-legend {
+    margin-top: 0;
+}
+
+.gesture-icon {
+    font-size: 1.6em;
+    margin-right: 5px; 
+}
+
+.lectura-legend {
+    margin-top: 40px;
 }
 
 .comandos-title {

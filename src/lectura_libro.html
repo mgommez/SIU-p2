@@ -76,6 +76,13 @@
         <footer class="book-footer">
             <p id="page-counter">PÁGINA</p>
             <progress id="progress-bar" value="0" max="100"></progress>
+            <div class="gestos-legend lectura-legend">
+                <h4 class="comandos-title">Gestos disponibles</h4>
+                <p><strong><span class="gesture-icon">👍</span></strong>: Pasar a la siguiente página.</p>
+                <p><strong><span class="gesture-icon">👎</span></strong>: Retroceder a la página anterior.</p>
+                <p><strong><span class="gesture-icon">✌️</span></strong>: Activar comandos de voz.</p>
+                <p><strong><span class="gesture-icon">🤟</span></strong>: Guardar el progreso y volver a la galería personal.</p>
+            </div>
         </footer>
         <div id="notification-container"></div>
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
@@ -83,3 +90,4 @@
         <script src="script/gestos.js" type="module"></script>
     </body>
 </html>
+
