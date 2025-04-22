@@ -1,12 +1,12 @@
 //GESTIÓN DE LECTURA
 
 const caracteresLibro = 200;
-const caracteresAudiolibro = 150;
 
 let endBook = false;
 let palabrasPorPagina = caracteresLibro;
 let textoLibroGlobal = "";
 let paginas = [];
+let paginas_audio = [];
 
 const socket = io();
 
@@ -37,7 +37,7 @@ async function obtenerMarcapaginas() {
     }
 }
 
-function generarPaginas(texto, palabrasPorPagina){
+/*function generarPaginas(texto, palabrasPorPagina){
     const text_in_words = texto.split(/(\n|\t)| +/).filter(x => x && x.trim() !== '');
 
     let ini_pag =0;
@@ -52,6 +52,23 @@ function generarPaginas(texto, palabrasPorPagina){
         
     }
     return paginas;
+}*/
+
+function generarPaginas(texto, palabrasPorPagina){
+    const text_in_words = texto.split(/(\n|\t)| +/).filter(x => x && x.trim() !== '');
+
+    let ini_pag =0;
+    let fin_pag = palabrasPorPagina;
+    const paginas_totales = Math.ceil(text_in_words.length / palabrasPorPagina);
+
+    lista = []
+    for(let i=0; i < paginas_totales; i++){
+        lista.push(text_in_words.slice(ini_pag, fin_pag).join(' '));
+        ini_pag += palabrasPorPagina;
+        fin_pag += palabrasPorPagina;
+    }
+
+    return lista;
 }
 
 function actualizarPagina(pagina_actual){
@@ -109,7 +126,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     //generación de páginas escritas
     await calcularPalabrasPorPagina(libro.texto, 'paragraph-holder').then(palabrasPorPagina =>{
         console.log("las palabras por página obtenidas son: ", palabrasPorPagina);
-        paginas =generarPaginas(libro.texto, palabrasPorPagina);
+        paginas = generarPaginas(libro.texto, palabrasPorPagina);
     });
     
     if(marcador<paginas.length){ //las nuevas páginas son menos que en un renderización anterior
@@ -144,8 +161,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 const pasarPagina = async () => {
     const marcador = parseInt(localStorage.getItem("marcador"));
     
-    const libro = await obtenerDatos();
-
     if (marcador + 1 < paginas.length) {
         const nuevo_marcador = marcador + 1;
         
@@ -178,8 +193,6 @@ const pasarPagina = async () => {
 const volverPagina = async () => {
     const marcador = parseInt(localStorage.getItem("marcador"));
     
-    const libro = await obtenerDatos();
-
     if (marcador !== 0) {
         const nuevo_marcador = marcador - 1;
         document.getElementById('book_page').textContent = paginas[nuevo_marcador];
@@ -246,16 +259,51 @@ const guardarMarcapaginas = async () => {
 
 const audio_speed = document.getElementById("audio-speed");
 
+const particion = 4;
+let particion_pos = 0;
+let pagina_particionada = [];
+
+const avanzarAudio = async () => {
+    if ((particion_pos + 1) % particion != 0) {
+        particion_pos += 1;
+    } else {
+        pasarPagina();
+
+        const marcador = parseInt(localStorage.getItem("marcador"));
+        pagina_particionada = generarPaginas(paginas[marcador], Math.ceil(palabrasPorPagina/particion));
+        
+        particion_pos = 0;
+
+        console.log("Pagina particionada: ", pagina_particionada);
+    }
+}
+
+const retrocederAudio = async () => {
+    if ((particion_pos + 1) % particion == 1) {
+        volverPagina();
+
+        const marcador = parseInt(localStorage.getItem("marcador"));
+        console.log("Vuelta marcador: ", marcador);
+        pagina_particionada = generarPaginas(paginas[marcador], Math.ceil(palabrasPorPagina/particion));
+
+        particion_pos = particion - 2;
+
+        console.log("Pagina particionada: ", pagina_particionada);
+    } else {
+        particion_pos -= 1;
+    }
+}
+
 const read_aloud = () => {
     console.log("Iniciando lectura...");
-    const to_read = new SpeechSynthesisUtterance(document.getElementById('book_page').textContent);
+    const to_read = new SpeechSynthesisUtterance(pagina_particionada[particion_pos]);
     to_read.lang = "es-ES";
     to_read.rate = parseFloat(audio_speed.value);
     to_read.pitch = 1;
 
     to_read.onend = async () => {
         console.log("Fragmento leído");
-        await pasarPagina();
+        await avanzarAudio();
         await new Promise(resolve => setTimeout(resolve, 10));
         time_to_read();
     }
@@ -275,12 +323,7 @@ const audio_handler = async () => {
     const audio = document.querySelector(".audiobook");
     const paragraph = document.querySelector(".paragraph-holder");
     const controls = document.querySelectorAll(".button-group--nav");
-    
 
-
-    palabrasPorPagina = audio.classList.contains("audio-on") ? caracteresLibro : caracteresAudiolibro;
-
-    await refrescarParagraph();
     audio.classList.toggle("audio-on");
     paragraph.classList.toggle("audio-off");
 
@@ -326,6 +369,10 @@ const audio = document.querySelector(".audiobook");
 const observer = new MutationObserver((mutationsList) => {
     for (let mutation of mutationsList) {
         if (mutation.type === "attributes" && mutation.attributeName === "class") {
+            const marcador = parseInt(localStorage.getItem("marcador"));
+            pagina_particionada = generarPaginas(paginas[marcador], Math.ceil(palabrasPorPagina/particion));
+            particion_pos = 0;
+
             time_to_read();
         }
     }
@@ -359,12 +406,12 @@ const audio_next = document.getElementById("audio-next");
 const audio_prev = document.getElementById("audio-prev");
 
 const next_audio = async () => {
-    await pasarPagina();
+    await avanzarAudio();
     time_to_read();
 }
 
 const prev_audio = async () => {
-    await volverPagina();
+    await retrocederAudio();
     time_to_read();
 }
 
