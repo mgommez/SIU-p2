@@ -117,7 +117,7 @@ async function calcularPalabrasPorPagina(texto, contenedor_id) {
 
 //GESTIÓN DE EVENTOS DE LECTURA
 
-window.addEventListener("DOMContentLoaded", async () => {
+const ajustarPaginasPantalla = async () => {
     const [libro, marcador] = await Promise.all([obtenerDatos(), obtenerMarcapaginas()]);
     
     document.getElementById('book_title').textContent = libro.titulo;
@@ -155,8 +155,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("boton-next").addEventListener("click", pasarPagina);
     document.getElementById("boton-prev").addEventListener("click", volverPagina);
     document.getElementById("boton-save").addEventListener("click", guardarMarcapaginas);
+}
     
-});
+
+window.addEventListener("DOMContentLoaded", ajustarPaginasPantalla);
 
 const pasarPagina = async () => {
     const marcador = parseInt(localStorage.getItem("marcador"));
