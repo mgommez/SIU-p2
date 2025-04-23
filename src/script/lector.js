@@ -230,7 +230,15 @@ socket.on('actualizar-pagina', ({titulo_libro, marcador}) => {
         console.log("Actualizando página sincronización...");
         localStorage.setItem("marcador", marcador);
         refrescarParagraph();
+        if(audio.classList.contains('audio-on')){
+            const marcador = parseInt(localStorage.getItem("marcador"));
+                pagina_particionada = generarPaginas(paginas[marcador], Math.ceil(palabrasPorPagina/particion));
+                particion_pos = 0;
+    
+                time_to_read();
+        }
     }
+    
 });
 
 //caso 2: sincronización de caracteres por pantalla
@@ -310,7 +318,7 @@ const retrocederAudio = async () => {
         console.log("Vuelta marcador: ", marcador);
         pagina_particionada = generarPaginas(paginas[marcador], Math.ceil(palabrasPorPagina/particion));
 
-        particion_pos = particion - 2;
+        particion_pos = particion - 1;
 
         console.log("Pagina particionada: ", pagina_particionada);
     } else {
