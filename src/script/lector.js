@@ -37,22 +37,6 @@ async function obtenerMarcapaginas() {
     }
 }
 
-/*function generarPaginas(texto, palabrasPorPagina){
-    const text_in_words = texto.split(/(\n|\t)| +/).filter(x => x && x.trim() !== '');
-
-    let ini_pag =0;
-    let fin_pag = palabrasPorPagina;
-    const paginas_totales = Math.ceil(text_in_words.length / palabrasPorPagina);
-
-
-    for(let i=0; i < paginas_totales; i++){
-        paginas.push(text_in_words.slice(ini_pag, fin_pag).join(' '));
-        ini_pag += palabrasPorPagina;
-        fin_pag += palabrasPorPagina;
-        
-    }
-    return paginas;
-}*/
 
 function generarPaginas(texto, palabrasPorPagina){
     const text_in_words = texto.split(/(\n|\t)| +/).filter(x => x && x.trim() !== '');
@@ -61,7 +45,7 @@ function generarPaginas(texto, palabrasPorPagina){
     let fin_pag = palabrasPorPagina;
     const paginas_totales = Math.ceil(text_in_words.length / palabrasPorPagina);
 
-    lista = []
+    let lista = [];
     for(let i=0; i < paginas_totales; i++){
         lista.push(text_in_words.slice(ini_pag, fin_pag).join(' '));
         ini_pag += palabrasPorPagina;
@@ -118,15 +102,17 @@ async function calcularPalabrasPorPagina(texto, contenedor_id) {
 //GESTIÓN DE EVENTOS DE LECTURA
 
 const ajustarPaginasPantalla = async () => {
-    const [libro, marcador] = await Promise.all([obtenerDatos(), obtenerMarcapaginas()]);
+    const [libro, posicion] = await Promise.all([obtenerDatos(), obtenerMarcapaginas()]);
     
     document.getElementById('book_title').textContent = libro.titulo;
     document.getElementById('author-name').textContent = libro.autor;
 
     //generación de páginas escritas
     await calcularPalabrasPorPagina(libro.texto, 'paragraph-holder').then(palabrasPorPagina =>{
-        console.log("las palabras por página obtenidas son: ", palabrasPorPagina);
+        localStorage.setItem("palabrasPorPagina", palabrasPorPagina);
         paginas = generarPaginas(libro.texto, palabrasPorPagina);
+        marcador = Math.floor(posicion/palabrasPorPagina);
+        console.log("mi nuevo marcador es: ", marcador, posicion, palabrasPorPagina);
     });
     
     if(marcador<paginas.length){ //las nuevas páginas son menos que en un renderización anterior
@@ -155,6 +141,13 @@ const ajustarPaginasPantalla = async () => {
     document.getElementById("boton-next").addEventListener("click", pasarPagina);
     document.getElementById("boton-prev").addEventListener("click", volverPagina);
     document.getElementById("boton-save").addEventListener("click", guardarMarcapaginas);
+
+    //gestión de sincronización
+    socket.emit('sincronizar-lectura', {
+        sync_paginas: paginas,
+        titulo_libro: localStorage.getItem("titulo"),
+        marcador: marcador
+    });
 }
     
 
@@ -220,36 +213,65 @@ const volverPagina = async () => {
 
 const refrescarParagraph = async () => {
     const marcador = parseInt(localStorage.getItem("marcador"));
+    console.log("desde refrescar, mi marcador es", marcador);
 
     const page_content = paginas[marcador];
     document.getElementById('book_page').textContent = page_content;
 
-    const pagina_actual = marcador;
+    const pagina_actual = marcador +1;
     actualizarPagina(pagina_actual);
 }
 
 
 //Sincronización
+//caso 1: update de la página
 socket.on('actualizar-pagina', ({titulo_libro, marcador}) => {
     if (titulo_libro == localStorage.getItem("titulo")) {
-        console.log("Actualizando página sincronización...")
+        console.log("Actualizando página sincronización...");
         localStorage.setItem("marcador", marcador);
         refrescarParagraph();
     }
-})
+});
+
+//caso 2: sincronización de caracteres por pantalla
+socket.on('sincronizar-lectura', ({sync_paginas, titulo_libro, marcador}) => {
+    if (titulo_libro == localStorage.getItem("titulo")) {
+        
+        if(sync_paginas.length >= paginas.length){
+            //si la solicitud tiene más páginas (menos caracteres por pantalla), renderi
+            paginas = sync_paginas;
+            console.log("Tengo menos páginas: actualizando página por sincronización...");
+            console.log("mi nuevo marcador es", marcador);
+            localStorage.setItem("marcador", marcador);
+            refrescarParagraph();
+        }
+        else{
+            //si el número de palabras de nuestro dispositivo es menor, emite un nuevo mensaje de sincronización
+            socket.emit('sincronizar-lectura', {
+                sync_paginas: paginas,
+                titulo_libro: localStorage.getItem("titulo"),
+                marcador: localStorage.getItem("marcador")
+            });
+        }
+        
+    }
+}
+
+);
 
 //Persistencia marcapáginas
 const guardarMarcapaginas = async () => {
     const titulo_libro = localStorage.getItem("titulo");
     const valor = localStorage.getItem("marcador");
+    const palabras =localStorage.getItem("palabrasPorPagina");
 
     try {
         const response = await fetch('api/lecturas_usuario', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ titulo: titulo_libro, marcador: valor })
+            body: JSON.stringify({ titulo: titulo_libro, marcador: valor*palabras})
         });
-
+        
         const resultado = await response.json();
         console.log('Marcapáginas guardado:', resultado);
     } catch (error) {

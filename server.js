@@ -111,6 +111,11 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('actualizar-vel-audio', speed);
     });
 
+    //Sincronizar
+    socket.on('sincronizar-lectura', ({sync_paginas, titulo_libro, marcador}) => {
+        socket.broadcast.emit('sincronizar-lectura', {sync_paginas, titulo_libro, marcador});
+    });
+
     //Desconexión.
     socket.on('disconnect', () => {
         console.log('Dispositivo desconectado');
