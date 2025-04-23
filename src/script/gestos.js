@@ -190,38 +190,41 @@ import {
             break;
 
         case "Victory":
-            if (
-                currentPage.includes("galeria_personal.html") ||
-                currentPage.includes("marketplace.html") ||
-                currentPage.includes("lectura_libro.html")
-            ) {
-                console.log("Gesto: Victoria - Activar comandos de voz.");
-                let voiceButton;
-
-                if (currentPage.includes("galeria_personal.html")) {
-                    // Seleccionar el botón en galeria_personal.html
-                    voiceButton = document.querySelector('button[onclick="startRecognition()"]');
-                } else {
-                    // Seleccionar el botón en otras páginas
-                    voiceButton = document.querySelector('button[onclick="reconocimiento_voz()"]');
-                }
-
-                if (voiceButton) {
-                    voiceButton.click();
-                } else {
-                    console.warn("No se encontró el botón para activar comandos de voz.");
-                }
-            }
-            break;
+          if (
+              currentPage.includes("galeria_personal.html") ||
+              currentPage.includes("marketplace.html") ||
+              currentPage.includes("lectura_libro.html")
+          ) {
+              console.log("Gesto: Victoria - Activar comandos de voz.");
+              let voiceButton;
+      
+              if (currentPage.includes("galeria_personal.html")) {
+                  voiceButton = document.querySelector('button[onclick="startRecognition()"]');
+              } else if (currentPage.includes("marketplace.html")) {
+                  voiceButton = document.getElementById("voice-button");
+              } else {
+                  voiceButton = document.querySelector('button[onclick="reconocimiento_voz()"]');
+              }
+      
+              if (voiceButton) {
+                  voiceButton.click();
+              } else {
+                  console.warn("No se encontró el botón para activar comandos de voz.");
+              }
+          }
+          break;
 
         case "ILoveYou":
-            if (currentPage.includes("lectura_libro.html")) {
-                console.log("Gesto: Mano cerrada - Guardar y volver a la galería.");
-                const saveButton = document.getElementById("boton-guardar");
-                if (saveButton) saveButton.click();
-                window.location.href = "galeria_personal.html"; // Redirige a la galería personal
-            }
-            break;
+          if (currentPage.includes("lectura_libro.html")) {
+              console.log("Gesto: Guardar y volver a la galería.");
+              const saveButton = document.getElementById("boton-guardar");
+              if (saveButton) saveButton.click();
+              window.location.href = "galeria_personal.html"; 
+          } else if (currentPage.includes("informacion_libro.html")) {
+              console.log("Gesto: Volver a la galería desde información del libro.");
+              window.location.href = "galeria_personal.html"; 
+          }
+          break;
 
         default:
             console.log(`Gesto no reconocido: ${gesture}`);

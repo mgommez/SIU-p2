@@ -79,13 +79,14 @@ function startRecognition() {
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    //mostrar opciones de comandos de voz
+    // Mostrar opciones de comandos de voz
     const legend = document.getElementById('speech-legend');
-    legend.style.display = "block";
-    setTimeout(()=>{
-        legend.style.display = "none";
-    }, 5000);
-
+    if (legend) { // Verificar si el elemento existe
+        legend.style.display = "block";
+        setTimeout(() => {
+            legend.style.display = "none";
+        }, 5000);
+    }
 
     recognition.start();
 
