@@ -101,7 +101,24 @@ function startRecognition() {
                 window.location.href = "marketplace.html";
             } else if (resultado.includes("información")) {
                 const tituloLibro = resultado.replace("información", "").trim();
-                window.location.href = `informacion_libro.html?titulo=${encodeURIComponent(tituloLibro)}`;
+            
+                obtenerLecturasUsuario().then(libros => {
+                    const libro = libros.find(libro =>
+                        libro.titulo.toLowerCase() === tituloLibro.toLowerCase()
+                    );
+            
+                    if (libro) {
+                        window.location.href = `informacion_libro.html?titulo=${encodeURIComponent(libro.titulo)}`;
+                    } else {
+                        showNotification(
+                            "Libro no reconocido. Intenta decir el título exactamente.",
+                            null, // No confirmación
+                            () => {
+                                console.log("Operación cancelada. Notificación cerrada.");
+                            }
+                        );
+                    }
+                });
             } else if (resultado.includes("borrar")) {
                 const tituloLibro = resultado.replace("borrar", "").trim();
                 borrarLibroUsuario(tituloLibro);
