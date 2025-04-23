@@ -163,8 +163,16 @@ import {
                 window.scrollBy(0, -200); // Desplazar hacia arriba
             } else if (currentPage.includes("lectura_libro.html")) {
                 console.log("Gesto: Pulgar arriba - Pasar página.");
-                const nextButton = document.getElementById("boton-next");
-                if (nextButton) nextButton.click();
+
+                const active_audio = localStorage.getItem("audio_active");
+                let button;
+                if (active_audio) {
+                  button = document.getElementById("audio-next");
+                } else {
+                  button = document.getElementById("boton-next");
+                }
+                if (button) button.click();
+
                 gestureCooldown = true; // Activar cooldown solo en lectura_libro.html
                 await sleep(5000); // Esperar 5 segundos
                 gestureCooldown = false; // Desactivar cooldown
@@ -181,8 +189,16 @@ import {
                 window.scrollBy(0, 200); // Desplazar hacia abajo
             } else if (currentPage.includes("lectura_libro.html")) {
                 console.log("Gesto: Pulgar abajo - Retroceder página.");
-                const prevButton = document.getElementById("boton-prev");
-                if (prevButton) prevButton.click();
+                
+                const active_audio = localStorage.getItem("audio_active");
+                let button;
+                if (active_audio) {
+                  button = document.getElementById("audio-prev");
+                } else {
+                  button = document.getElementById("boton-prev");
+                }
+                if (button) button.click();
+
                 gestureCooldown = true; // Activar cooldown solo en lectura_libro.html
                 await sleep(5000); // Esperar 5 segundos
                 gestureCooldown = false; // Desactivar cooldown

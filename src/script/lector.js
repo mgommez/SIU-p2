@@ -360,6 +360,7 @@ const audio_handler = async () => {
 
     active_audio = !active_audio;
     blocked = !blocked;
+    localStorage.setItem("audio_active", active_audio);
     socket.emit('cambiar-bloqueo-audio', blocked);
 
     audio.classList.toggle("audio-on");
