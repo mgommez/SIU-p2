@@ -189,30 +189,40 @@ import {
             }
             break;
 
-        case "Victory":
-          if (
-              currentPage.includes("galeria_personal.html") ||
-              currentPage.includes("marketplace.html") ||
-              currentPage.includes("lectura_libro.html")
-          ) {
-              console.log("Gesto: Victoria - Activar comandos de voz.");
-              let voiceButton;
-      
-              if (currentPage.includes("galeria_personal.html")) {
-                  voiceButton = document.querySelector('button[onclick="startRecognition()"]');
-              } else if (currentPage.includes("marketplace.html")) {
-                  voiceButton = document.getElementById("voice-button");
-              } else {
-                  voiceButton = document.querySelector('button[onclick="reconocimiento_voz()"]');
-              }
-      
-              if (voiceButton) {
-                  voiceButton.click();
-              } else {
-                  console.warn("No se encontró el botón para activar comandos de voz.");
-              }
-          }
-          break;
+          case "Victory":
+            if (
+                currentPage.includes("galeria_personal.html") ||
+                currentPage.includes("marketplace.html") ||
+                currentPage.includes("lectura_libro.html")
+            ) {
+                console.log("Gesto: Victoria - Activar comandos de voz.");
+                let voiceButton;
+        
+                if (currentPage.includes("galeria_personal.html")) {
+                    voiceButton = document.querySelector('button[onclick="startRecognition()"]');
+                } else if (currentPage.includes("marketplace.html")) {
+                    voiceButton = document.getElementById("voice-button");
+                } else {
+                    voiceButton = document.querySelector('button[onclick="reconocimiento_voz()"]');
+                }
+        
+                if (voiceButton) {
+                    voiceButton.click();
+        
+                    const legend = document.querySelector('.speech-legend'); 
+                    if (legend) {
+                        legend.style.display = "block"; 
+                        setTimeout(() => {
+                            legend.style.display = "none"; 
+                        }, 5000);
+                    } else {
+                        console.warn("No se encontró el elemento 'speech-legend'.");
+                    }
+                } else {
+                    console.warn("No se encontró el botón para activar comandos de voz.");
+                }
+            }
+            break;
 
         case "ILoveYou":
           if (currentPage.includes("lectura_libro.html")) {

@@ -85,7 +85,7 @@ function startRecognition() {
         legend.style.display = "block";
         setTimeout(() => {
             legend.style.display = "none";
-        }, 5000);
+        }, 5000); // Ocultar después de 5 segundos
     }
 
     recognition.start();
@@ -100,11 +100,11 @@ function startRecognition() {
             if (resultado.includes("añadir libro")) {
                 window.location.href = "marketplace.html";
             } else if (resultado.includes("información")) {
-                const tituloLibro = resultado.replace("información", "").trim(); // Obtener el título del libro
-                window.location.href = `informacion_libro.html?titulo=${encodeURIComponent(tituloLibro)}`; // Redirigir con el título en la URL
+                const tituloLibro = resultado.replace("información", "").trim();
+                window.location.href = `informacion_libro.html?titulo=${encodeURIComponent(tituloLibro)}`;
             } else if (resultado.includes("borrar")) {
                 const tituloLibro = resultado.replace("borrar", "").trim();
-                borrarLibroUsuario(tituloLibro);           
+                borrarLibroUsuario(tituloLibro);
             } else {
                 alert("Comando no reconocido: " + resultado);
             }
