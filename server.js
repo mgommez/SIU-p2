@@ -98,6 +98,8 @@ app.patch('/api/lecturas_usuario', (req, res) => {
     });
 });
 
+let blocked = false; 
+
 //Sincronización
 io.on('connection', (socket) => {
     console.log('Nuevo dispositivo conectado');
@@ -107,8 +109,9 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('actualizar-pagina', { titulo_libro, marcador });
     });
 
-    socket.on('cambiar-vel-audio', (speed) => {
-        socket.broadcast.emit('actualizar-vel-audio', speed);
+    socket.on('cambiar-bloqueo-audio', (l_blocked) => {
+        blocked = l_blocked;
+        socket.broadcast.emit('actualizar-bloqueo-audio', blocked);
     });
 
     //Sincronizar

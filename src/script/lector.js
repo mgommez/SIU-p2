@@ -3,6 +3,8 @@
 const caracteresLibro = 200;
 
 let endBook = false;
+let blocked = false;
+let active_audio = false;
 let palabrasPorPagina = caracteresLibro;
 let textoLibroGlobal = "";
 let paginas = [];
@@ -318,7 +320,7 @@ const retrocederAudio = async () => {
         console.log("Vuelta marcador: ", marcador);
         pagina_particionada = generarPaginas(paginas[marcador], Math.ceil(palabrasPorPagina/particion));
 
-        particion_pos = particion - 1;
+        particion_pos = particion - 2;
 
         console.log("Pagina particionada: ", pagina_particionada);
     } else {
@@ -356,6 +358,10 @@ const audio_handler = async () => {
     const paragraph = document.querySelector(".paragraph-holder");
     const controls = document.querySelectorAll(".button-group--nav");
 
+    active_audio = !active_audio;
+    blocked = !blocked;
+    socket.emit('cambiar-bloqueo-audio', blocked);
+
     audio.classList.toggle("audio-on");
     paragraph.classList.toggle("audio-off");
 
@@ -364,8 +370,18 @@ const audio_handler = async () => {
     });
 }
 
+const activar_audio = async () => {
+    if (blocked && active_audio || blocked == false) {
+        audio_handler();
+    }
+}
+
+socket.on('actualizar-bloqueo-audio', (l_blocked) => {
+    blocked = l_blocked;
+})
+
 const boton_audio = document.getElementById("boton-audio");
-boton_audio.addEventListener("click", audio_handler);
+boton_audio.addEventListener("click", activar_audio);
 
 function reconocimiento_voz() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -385,7 +401,9 @@ function reconocimiento_voz() {
     recognition.onresult = function (event) {
         const resultado = event.results[0][0].transcript.toLowerCase().trim();
         if (resultado.includes("reproducir") || resultado.includes("detener")) {
-            audio_handler();
+            if (blocked && active_audio || blocked == false) {
+                audio_handler();
+            }
         }
         
 
@@ -423,15 +441,6 @@ const audio_speed_handler = () => {
 }
 
 audio_speed.addEventListener("input", audio_speed_handler);
-
-socket.on('actualizar-vel-audio', (speed) => {
-    console.log("Sincronización velocidad de audio: ", speed);
-    
-    audio_speed.value = speed;
-    document.getElementById("speed-label").textContent = "x" + audio_speed.value;
-
-    time_to_read();
-})
 
 //Avanzar, retroceder audio.
 const audio_next = document.getElementById("audio-next");
